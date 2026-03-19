@@ -1,286 +1,241 @@
-# G2gether 프로젝트 협업 프로그램
+# G2gether - 웹 기반 협업 플랫폼
 
 <p align="center">
-<img width="1889" height="948" alt="메인" src="https://github.com/user-attachments/assets/8a8b91ff-a352-4c88-bd2f-d9bdd0d71459"/>
+  <img width="1889" height="948" alt="메인" src="https://github.com/user-attachments/assets/8a8b91ff-a352-4c88-bd2f-d9bdd0d71459"/>
 </p>
 
 ---
 
-## 📑 바로가기
+## 목차
 
 <p align="center">
   <a href="#프로젝트-개요"><kbd>📘 프로젝트 개요</kbd></a>
   &nbsp;&nbsp;
+  <a href="#개발-기간"><kbd>📅 개발 기간</kbd></a>
+  &nbsp;&nbsp;
   <a href="#개발-환경"><kbd>⚙️ 개발 환경</kbd></a>
   &nbsp;&nbsp;
-  <a href="#데이터-베이스"><kbd>🗄️ 데이터 베이스</kbd></a>
+  <a href="#담당-역할"><kbd>🧩 담당 역할</kbd></a>
   &nbsp;&nbsp;
-  <a href="#메뉴-구성도"><kbd>📑 메뉴 구성도</kbd></a>
+  <a href="#업무관리-파트-소개"><kbd>📌 업무관리 파트 소개</kbd></a>
   &nbsp;&nbsp;
-  <a href="#Project-Structure"><kbd>📁 Project Structure</kbd></a>
+  <a href="#주요-구현-기능"><kbd>🛠 주요 구현 기능</kbd></a>
+  &nbsp;&nbsp;
+  <a href="#주요-화면"><kbd>🖼 주요 화면</kbd></a>
+  &nbsp;&nbsp;
+  <a href="#기술적-구현-포인트"><kbd>💡 기술적 구현 포인트</kbd></a>
+  &nbsp;&nbsp;
+  <a href="##향후-개선-사항"><kbd>🔍 향후 개선 사항</kbd></a>
   &nbsp;&nbsp;
   <a href="#프로젝트-소감"><kbd>📝 프로젝트 소감</kbd></a>
-</p>
-
-<p align="center">
-  <a href="#계정관리-파트"><kbd>🧩 계정 관리</kbd></a>
-  &nbsp;&nbsp;
-  <a href="#업무관리-파트"><kbd>🧩 업무 관리</kbd></a>
-  &nbsp;&nbsp;
-  <a href="#일정관리-파트"><kbd>🧩 일정 관리</kbd></a>
-  &nbsp;&nbsp;
-  <a href="#협업관리-파트"><kbd>🧩 협업 관리</kbd></a>
-  &nbsp;&nbsp;
-  <a href="#시스템관리-파트"><kbd>🧩 시스템 관리</kbd></a>
 </p>
 
 ---
 
 # 프로젝트 개요
 
-현재 팀 프로젝트 운영 환경에서는 일감 생성, 일정 관리, 상태 추적 등 다양한 작업이 서로 다른 도구에 분산되어 있어 업무 흐름이 단절되는 문제가 빈번하게 발생합니다. 기존 협업 도구들은 기능 자체는 풍부하지만, 정보 밀도가 지나치게 높고 화면 이동이 많아 실제 업무 현장에서 기능 탐색이 어렵다는 한계가 있습니다. 특히 필터·검색·정렬 흐름이 실무자의 실제 작업 방식과 맞지 않아 동일한 작업을 반복 수행해야 하는 비효율이 발생하고 있습니다.
+G2gether는 프로젝트 관리, 일정 조율, 협업 기능을 하나의 시스템에서 통합적으로 처리할 수 있도록 구현한 **웹 기반 협업 플랫폼**입니다.
 
-이에 본 프로젝트는 **프로젝트 관리·일정 조율·팀원 간 협업 기능**을 하나의 시스템에서 **통합적으로 처리할 수 있는 웹 기반 협업 플랫폼**을 구현하는 것을 목표로 했습니다. 기존 도구의 핵심 기능은 유지하면서 사용 흐름을 단순화하고, 로그인 사용자의 권한에 따라 접근 가능한 메뉴와 기능을 구분하는 구조를 설계하여 팀원 누구나 쉽게 사용할 수 있는 협업 환경을 구축하고자 했습니다.
+기존 협업 도구들은 다양한 기능을 제공하지만 정보 밀도가 높고 화면 이동이 많아 실제 업무 흐름에 맞게 사용하기 어렵다는 한계가 있었습니다. 이에 본 프로젝트는 핵심 기능은 유지하면서도 **사용 흐름을 단순화하고, 권한에 따라 접근 가능한 기능을 구분하는 구조**를 설계하여 보다 직관적인 협업 환경을 제공하는 것을 목표로 했습니다.
 
-### 개발 일정
+본 프로젝트는 **4인 팀 프로젝트**로 진행되었으며, 이 README에서는 전체 프로젝트 소개와 함께 **제가 담당한 업무관리 파트**를 중심으로 주요 구현 내용과 기술적 특징을 정리했습니다.
+
+---
+
+# 개발 기간
+
 - **2026.01.29 ~ 2026.03.12**
 
 ---
 
-# 활용 방안
-
-* **업무 운영 지원**  
-조건 필터 기능을 활용하여 필요한 업무를 신속하게 조회하고 회의 및 데일리 스크럼 등 업무 운영 과정에서 활용할 수 있습니다.
-
-* **진행 현황 관리**  
-보드 화면을 통해 업무의 진행 상태를 한눈에 확인할 수 있으며 업무 흐름을 직관적으로 관리할 수 있습니다.
-
-* **대량 업무 처리**  
-목록 화면을 활용하여 다수의 일감을 효율적으로 조회하고 정리할 수 있습니다.
-
-* **프로젝트 단위 관리**  
-권한 기반 접근 구조를 통해 프로젝트별 독립적인 관리가 가능하며 사용자 권한에 따라 접근 범위를 구분할 수 있습니다.
-
----
-
-# 기대 효과
-
-* **업무 파악 시간 단축**  
-필요한 업무 정보를 빠르게 조회할 수 있어 업무 파악 시간을 줄일 수 있습니다.
-
-* **반복 작업 감소**  
-화면 이동을 최소화하여 불필요한 반복 작업을 줄이고 작업 효율을 높일 수 있습니다.
-
-* **오류 및 혼선 감소**  
-권한 및 상태 구분을 통해 업무 책임과 진행 상태를 명확하게 관리할 수 있습니다.
-
-* **팀 협업 효율 증대**  
-업무 공유와 진행 상황을 투명하게 관리하여 협업 효율을 높일 수 있습니다.
-
----
-
-# 팀 구성 및 역할
-
-<table border="1" cellpadding="12" cellspacing="0" align="center">
-<tr>
-<th align="center">정재은</th>
-<th align="center">도우서</th>
-<th align="center">성찬혁</th>
-<th align="center">권수민</th>
-</tr>
-
-<tr>
-<td align="center">
-<img width="120" src="https://github.com/user-attachments/assets/8d5708ba-b9f8-41e6-bd47-7c5e777a0088"/>
-</td>
-
-<td align="center">
-<img width="120" src="https://github.com/user-attachments/assets/fd2ed4de-b16c-4339-a6f7-bc8f4d846d29"/>
-</td>
-
-<td align="center">
-<img width="120" src="https://github.com/user-attachments/assets/4c713a36-ac69-4107-bf2e-e7de21af0f90"/>
-</td>
-
-<td align="center">
-<img width="120" src="https://github.com/user-attachments/assets/8d5708ba-b9f8-41e6-bd47-7c5e777a0088"/>
-</td>
-</tr>
-
-<tr>
-<td align="center">팀장<br>배포</td>
-<td align="center">부팀장<br>Git 관리</td>
-<td align="center">DB 관리</td>
-<td align="center">개발환경 구축</td>
-</tr>
-</table>
-
----
-
 # 개발 환경
-[FRONTEND] HTML5, CSS, JavaScript, jQuery, Bootstrap 5, Thymeleaf  
-[BACKEND] Java, Spring Framework, MyBatis  
-[DATABASE] Oracle Database  
-[SERVER] AWS EC2  
-[DEVOPS] Maven, Jenkins, Docker  
-[TOOL] Eclipse 2025-06, Oracle Developer  
-[OS] Windows 10 Pro, Ubuntu 11
+
+- **Frontend** : HTML5, CSS3, JavaScript, jQuery, Bootstrap 5, Thymeleaf
+- **Backend** : Java, Spring Framework, MyBatis
+- **Database** : Oracle Database
+- **DevOps / Server** : Maven, Jenkins, Docker, AWS EC2
+- **Tool** : Eclipse, Oracle Developer
+- **OS** : Windows 10 Pro, Ubuntu
 
 ---
 
-# 데이터 베이스
+# 담당 역할
+
+| 구분 | 내용 |
+|------|------|
+| 프로젝트 형태 | 4인 팀 프로젝트 |
+| 담당 역할 | 팀장 / 업무관리 파트 담당 / 배포 |
+| 주요 담당 업무 | 업무관리 기능 설계 및 구현, 권한 기반 조회 처리, UI 개선, 배포 환경 구성 |
+| 구현 범위 | 일감 목록, 일감 상세, 일감 등록/수정, 칸반 보드, 소요시간 관리, 소요시간 통계 |
+
+---
+
+# 업무관리 파트 소개
+
+업무관리 파트는 프로젝트 일감을 효율적으로 생성, 조회, 수정하고 진행 상태를 직관적으로 파악할 수 있도록 구현한 핵심 기능입니다.
+
+사용자는 **목록형 화면**과 **칸반 보드형 화면**을 통해 업무를 상황에 맞게 관리할 수 있으며, 프로젝트·유형·담당자·작성자·상태 등의 조건을 활용해 필요한 업무를 빠르게 조회할 수 있습니다. 또한 로그인 사용자의 권한에 따라 조회 가능한 프로젝트 및 기능 범위가 달라지도록 구현하여, 실제 협업 환경에 가까운 접근 제어 구조를 반영했습니다.
+
+---
+
+# 주요 구현 기능
+
+## 1. 일감 목록 조회 및 필터링
+- 프로젝트, 유형, 우선순위, 담당자, 작성자, 생성일, 마감일 등 다양한 조건으로 일감을 조회할 수 있도록 구현
+- 반복 조회가 많은 업무 특성을 고려하여 검색 및 필터 흐름을 단순화
+- 페이지네이션을 적용하여 목록 가독성과 응답 효율을 개선
+
+## 2. 일감 등록 / 수정 / 상세 조회
+- 일감 생성 시 프로젝트, 유형, 담당자, 우선순위, 일정 등의 정보를 입력할 수 있도록 구현
+- 상세 화면에서 일감의 주요 정보와 진행 상태를 확인할 수 있도록 구성
+- 수정 화면을 통해 업무 정보 변경이 가능하도록 구현
+
+## 3. 칸반 보드 기반 상태 관리
+- 상태별 컬럼 구조로 업무를 시각화하여 진행 현황을 직관적으로 확인할 수 있도록 구현
+- Drag & Drop 방식으로 상태를 변경할 수 있도록 구성
+- 프로젝트 선택 및 권한 조건에 따라 표시 가능한 업무 범위를 제어
+
+## 4. 소요시간 관리
+- 일감별 작업 시간을 기록하고 누적 관리할 수 있도록 구현
+- 업무 수행 이력을 기반으로 작업 내용을 조회할 수 있도록 구성
+- 실무에서 자주 사용하는 작업 시간 관리 흐름을 반영
+
+## 5. 소요시간 통계
+- 프로젝트별, 작업자별, 유형별 소요시간 집계 기능 구현
+- 필터 조건과 그룹 옵션을 조합해 다양한 방식으로 데이터를 확인할 수 있도록 구성
+- 단순 조회를 넘어 업무 분포와 작업량을 파악할 수 있도록 시각적 구조를 고려
+
+## 6. 권한 기반 조회 및 기능 제어
+- 로그인 사용자의 프로젝트 권한에 따라 조회 가능한 데이터 범위를 분기 처리
+- 관리자와 일반 사용자 권한에 따라 기능 접근 범위를 구분
+- 권한 구조와 화면 동작이 연결되도록 구현하여 협업 시스템 특성을 반영
+
+---
+
+# 주요 화면
+
+## 일감 목록
 
 <p align="center">
-<img width="808" src="https://github.com/user-attachments/assets/b86cd035-8393-4156-b865-1524f135b7b1"/>
+  <img width="1000" alt="일감목록" src="https://github.com/user-attachments/assets/39e5f821-babc-4e94-9ed0-d22a115fe028"/>
+
 </p>
+
+- 다양한 조건 검색과 필터를 통해 필요한 업무를 빠르게 조회할 수 있도록 구현했습니다.
+- 목록형 화면에서 업무를 한 번에 정리하고 관리할 수 있도록 구성했습니다.
 
 ---
 
-# 메뉴 구성도
+## 일감 상세 / 수정
+
+<table align="center">
+  <tr>
+    <td align="center" width="50%"><b>일감 상세</b></td>
+    <td align="center" width="50%"><b>일감 수정</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/769e9837-4e9c-4471-908d-f963699664d3" width="100%"></td> 
+    <td><img src="https://github.com/user-attachments/assets/23a5d60d-5a9d-4e0b-be57-f4be31b1c2ba" width="100%"></td>
+  </tr>
+</table>
+
+- 일감의 상세 정보, 상태, 일정, 담당자 등을 확인할 수 있도록 구성했습니다.
+- 수정 기능을 통해 업무 정보 변경 및 관리가 가능하도록 구현했습니다.
+
+---
+
+## 칸반 보드
 
 <p align="center">
-<img width="910" src="https://github.com/user-attachments/assets/e934bf07-03ff-4e93-a3a5-8565d37ad21e"/>
+  <img width="1000" alt="칸반보드" src="https://github.com/user-attachments/assets/65e906e7-d334-4a44-bded-3a75f004c279"/>
 </p>
 
----
-
-# 계정관리 파트
-
-계정 생성, 로그인, 권한 관리 등 사용자 인증 및 권한 제어 기능을 담당합니다.
+- 상태별 컬럼으로 업무 흐름을 직관적으로 파악할 수 있도록 구현했습니다.
+- Drag & Drop 방식으로 상태를 변경할 수 있도록 구성하여 사용 편의성을 높였습니다.
 
 ---
 
-# 업무관리 파트
+## 작업내역
 
-프로젝트 내 업무 생성, 상태 변경, 필터링 및 보드 기반 업무 관리 기능을 제공합니다.
+<p align="center">
+  <img width="1000" alt="작업내역" src="https://github.com/user-attachments/assets/6181f63f-b037-4a73-b39a-8642272b18fe"/>
+</p>
 
----
-
-# 일정관리 파트
-
-캘린더 기반 일정 관리 및 프로젝트 일정 공유 기능을 제공합니다.
-
----
-
-# 협업관리 파트
-
-팀원 간 협업을 위한 게시판, 메일함, 파일 공유 기능을 제공합니다.
+- 일감, 공지, 문서의 작업내역을 확인할 수 있도록 구현했습니다.
+- 필터에서 원하는 대상을 선택해 조회할 수 있습니다.
 
 ---
 
-# 시스템관리 파트
-관리자 권한 기반으로 프로젝트 및 시스템 설정을 관리하는 기능을 제공합니다.
-<br>
-🔗 [GitHub 개인 Repository 바로가기](https://github.com/Peinoi/redmineProject1)
----
+## 소요시간 목록
 
-## 프로젝트 관리
-
-<table>
-<tr>
-<td><img src="https://github.com/user-attachments/assets/487f0cd3-5d02-4680-9b2c-5016ee01eec7" width="100%"></td>
-<td><img src="https://github.com/user-attachments/assets/df6a623d-a4d2-447c-aba4-59d9384c25f9" width="100%"></td>
-</tr>
+<table align="center">
+  <tr>
+    <td align="center" width="50%"><b>소요시간 목록</b></td>
+    <td align="center" width="50%"><b>소요시간 모달</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/ab00f892-c54b-4b64-a158-f78cedc736cb" width="100%"></td> 
+    <td><img src="https://github.com/user-attachments/assets/fd1e82ce-d110-42d4-ad71-d7304e551694" width="100%"></td>
+  </tr>
 </table>
 
-- 프로젝트 목록을 확인하고 관리할 수 있습니다.  
-- 신규 프로젝트 등록을 통해 프로젝트명, 진척률, 상태 등 기본 정보를 설정할 수 있습니다.  
-- 프로젝트별 협업 환경 구성을 위한 초기 설정을 진행할 수 있습니다.  
+- 일감 단위의 작업 시간 기록과 이력 확인이 가능하도록 구현했습니다.
+- 업무 수행 내역을 효율적으로 관리할 수 있도록 구성했습니다.
 
 ---
 
-## 사용자 관리
+## 소요시간 통계
 
-<table>
-<tr>
-<td><img src="https://github.com/user-attachments/assets/41f73de4-c31a-4781-b02c-3570688fb42c" width="100%"></td>
-<td><img src="https://github.com/user-attachments/assets/24e0cd73-92b3-405b-961b-89fff3210065" width="100%"></td>
-</tr>
-</table>
+<p align="center">
+  <img width="1000" alt="소요시간통계" src="https://github.com/user-attachments/assets/08899cf2-e4d7-4fc4-926e-2fd0d2bea72e"/>
+</p>
 
-- 시스템에 등록된 사용자 정보를 조회하고 관리할 수 있습니다.  
-- 사용자 등록을 통해 신규 사용자를 시스템에 추가할 수 있습니다.  
-- 계정 상태 관리 및 기본 사용자 정보를 설정할 수 있습니다.  
+- 프로젝트, 작업자, 유형 기준으로 소요시간을 집계할 수 있도록 구현했습니다.
+- 필터와 그룹 기능을 통해 다양한 관점에서 업무 데이터를 분석할 수 있도록 구성했습니다.
 
 ---
 
-## 역할 관리
+# 기술적 구현 포인트
 
-<table>
-<tr>
-<td><img src="https://github.com/user-attachments/assets/2a335793-4f10-4df0-a97f-7063fcfaf8e2" width="100%"></td>
-<td><img src="https://github.com/user-attachments/assets/49543620-081e-4645-b7a1-f639bced618a" width="100%"></td>
-</tr>
-</table>
+## 1. 권한 기반 접근 제어
+- 사용자 권한과 프로젝트 권한에 따라 조회 가능한 데이터 범위를 분기 처리했습니다.
+- 관리자 권한과 일반 사용자 권한에 따라 화면 동작 및 접근 범위를 구분했습니다.
 
-- 역할 목록을 조회하고 역할별 권한을 관리할 수 있습니다.  
-- 역할 등록을 통해 시스템 내 권한 체계를 정의할 수 있습니다.  
-- 역할 기반 접근 제어(RBAC)를 통해 기능 접근 권한을 관리합니다.  
+## 2. MyBatis 기반 동적 쿼리 구성
+- 다양한 검색 조건을 유연하게 처리하기 위해 MyBatis 동적 SQL을 활용했습니다.
+- 필터 조건 조합에 따라 필요한 데이터만 조회할 수 있도록 쿼리를 구성했습니다.
 
----
+## 3. UI/UX 개선
+- 정보 밀도가 높은 협업 도구 특성을 고려하여 필터 흐름과 화면 배치를 단순화했습니다.
+- 실사용자가 자주 사용하는 흐름을 기준으로 검색, 선택, 상태 변경 과정을 정리했습니다.
 
-## 그룹 관리
-
-<table>
-<tr>
-<td><img src="https://github.com/user-attachments/assets/27f09c95-0342-4510-a0a0-5decc95416b1" width="100%"></td>
-<td><img src="https://github.com/user-attachments/assets/56282bdf-59fe-43fb-b924-6171764a7c95" width="100%"></td>
-</tr>
-</table>
-
-- 사용자 그룹을 생성하고 관리할 수 있습니다.  
-- 그룹 등록을 통해 조직 단위의 사용자 관리가 가능합니다.  
-- 그룹별 사용자 분류를 통해 권한 및 프로젝트 접근을 효율적으로 관리합니다.  
+## 4. 통계 데이터 구성
+- 소요시간 데이터를 프로젝트/유형/사용자 기준으로 집계할 수 있도록 설계했습니다.
+- 단순 합산이 아닌 실제 업무 분석에 활용할 수 있는 형태로 화면에 표현했습니다.
 
 ---
 
-## 일감 유형 관리
+## 향후 개선 사항
+- 사용자 친화적인 UI 고도화
+- 데이터 조회 성능 및 쿼리 최적화
+- 통계 시각화 방식 보완
+- 업무관리 외 다른 파트와의 연계 흐름 개선
 
-<table>
-<tr>
-<td><img src="https://github.com/user-attachments/assets/c3f38673-75ce-455e-9452-3d5f94b314b7" width="100%"></td>
-<td><img src="https://github.com/user-attachments/assets/efe28ba5-6140-4684-b76c-fb2050fd69a6" width="100%"></td>
-</tr>
-</table>
+---
 
-- 프로젝트에서 사용할 일감 유형을 관리할 수 있습니다.  
-- 신규 일감 유형을 등록하여 작업 분류 체계를 설정할 수 있습니다.  
-- 계층 구조를 통해 상위/하위 일감 유형을 구성할 수 있습니다.  
+# 프로젝트를 통해 배운 점
+
+- 협업 시스템에서 **권한 구조와 데이터 접근 제어**가 얼마나 중요한지 직접 구현하며 이해할 수 있었습니다.
+- 업무 흐름에 맞는 화면과 기능을 설계하는 과정에서 **사용자 중심 UI/UX의 중요성**을 체감했습니다.
+- 목록, 보드, 통계처럼 서로 다른 형태의 화면을 구현하며 **백엔드 로직과 프론트엔드 UI를 연결하는 경험**을 쌓을 수 있었습니다.
+- 팀장 역할과 배포 경험을 통해 단순 기능 구현을 넘어 **프로젝트 전체 흐름을 조율하는 경험**을 얻을 수 있었습니다.
+
 ---
 
 # 프로젝트 소감
 
-프로젝트를 진행하며 업무 프로세스를 이해하고 이를 기반으로 초기 기획 기능을 목적에 맞게 구현하는 데 집중했습니다. 특히 사용자 역할과 프로젝트 권한 구조를 설계하고 구현하는 과정에서 시스템 구조와 접근 제어의 중요성을 깊이 이해할 수 있었습니다.
+프로젝트를 진행하며 업무 프로세스를 이해하고 이를 시스템 기능으로 구현하는 과정에 집중했습니다. 특히 업무관리 파트를 담당하면서 단순히 화면을 만드는 것에 그치지 않고, 사용자 권한에 따라 어떤 데이터를 보여주고 어떤 흐름으로 작업하도록 할지까지 고민하며 구현할 수 있었습니다.
 
-개발 과정에서는 팀원들과 협업하며 소통과 역할 분담의 중요성을 경험했고 다양한 기능을 함께 구현하면서 MVC 구조에 대한 이해와 권한 설계, 문제 해결 역량을 향상시킬 수 있었습니다.
+또한 팀원들과 협업하며 기능을 분담하고 통합하는 과정에서 소통과 역할 조율의 중요성을 경험할 수 있었고, 실제 서비스 형태에 가까운 구조를 구현해보며 MVC 구조, 권한 설계, 데이터 처리 흐름에 대한 이해를 높일 수 있었습니다.
 
-또한 사용자 편의성을 높이기 위해 화면 구성을 더욱 직관적으로 개선할 필요가 있으며 데이터 조회 성능 향상을 위한 쿼리 및 응답 구조 최적화가 향후 보완해야 할 부분이라고 생각합니다.
-
----
-
-# Project Structure
-
-### Client / Server Architecture
-
-<div align="center">
-<table>
-<tr>
-<td align="center">
-
-**Client**
-
-<img src="https://github.com/user-attachments/assets/f992ab2c-4ee9-41fb-8e81-9cf986f08260" width="420"/>
-
-</td>
-
-<td align="center">
-
-**Server**
-
-<img src="https://github.com/user-attachments/assets/cdf58929-7cb8-4598-a087-d4abf488c450" width="420"/>
-
-</td>
-
-</tr>
-</table>
-</div>
+향후에는 사용자 편의성을 더욱 높일 수 있도록 UI를 보완하고, 데이터 조회 성능과 응답 구조를 지속적으로 개선해 나가고자 합니다.
