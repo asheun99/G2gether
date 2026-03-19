@@ -25,8 +25,6 @@
   &nbsp;&nbsp;
   <a href="#기술적-구현-포인트"><kbd>💡 기술적 구현 포인트</kbd></a>
   &nbsp;&nbsp;
-  <a href="##향후-개선-사항"><kbd>🔍 향후 개선 사항</kbd></a>
-  &nbsp;&nbsp;
   <a href="#프로젝트-소감"><kbd>📝 프로젝트 소감</kbd></a>
 </p>
 
