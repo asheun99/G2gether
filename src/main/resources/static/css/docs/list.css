@@ -1,0 +1,233 @@
+.x-page-title {
+	margin: 14px 0 12px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.page-title {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 800;
+	color: #111827;
+}
+
+.page-title-sub {
+	margin-top: 4px;
+	font-size: 12px;
+	color: #6b7280;
+}
+
+/* ================== 트리 구조 (모달용) ================== */
+.folder-tree ul {
+	list-style: none;
+	padding-left: 1rem;
+}
+
+.folder-tree li {
+	cursor: pointer;
+}
+
+.folder-tree li span {
+	margin-left: 4px;
+}
+
+/* ================== 문서 목록 카드 ================== */
+.docs-list-card {
+	border-radius: 12px;
+	border: 1px solid #e5e7eb;
+	background: #ffffff;
+	overflow: hidden;
+}
+
+/* ================== 문서 목록 테이블 ================== */
+#docsTable {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+#docsTable th, #docsTable td {
+    box-sizing: border-box;
+    padding: 12px 10px;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 헤더 설정: 구분만 왼쪽, 나머지는 중앙 */
+#docsTable thead th {
+    font-size: 14px;
+    font-weight: 800;
+    background-color: rgb(224, 229, 243);
+    color: #111827;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: center; /* 전체 중앙 */
+}
+#docsTable thead th:first-child {
+    text-align: left; /* 첫 컬럼만 왼쪽 */
+}
+
+/* 바디 데이터 정렬: 2번째~6번째 컬럼 중앙 정렬 */
+#docsTable tbody td {
+    font-size: 14px;
+    color: #111827;
+    border-bottom: 1px solid #eeeeee;
+    text-align: center; /* 기본 중앙 */
+}
+
+/* 첫 번째 컬럼(구분) 및 프로젝트 행 예외 정렬 */
+#docsTable tbody td:first-child,
+#docsTable tbody tr.row-project td {
+    text-align: left !important;
+}
+
+/* ================== 프로젝트 행 ================== */
+#docsTable .row-project td {
+	background-color: #ffffff !important;
+	font-weight: 800 !important;
+	color: #111827 !important;
+	border-bottom: 1px solid #e5e7eb !important;
+	cursor: pointer;
+	user-select: none;
+}
+
+#docsTable .row-project:hover td {
+	background-color: #f9fafb !important;
+}
+
+.project-toggle, .folder-toggle {
+	display: inline-block;
+	width: 16px;
+	font-size: 0.7rem;
+	color: #555;
+	margin-right: 4px;
+}
+
+.project-icon {
+	color: #111827;
+	margin-right: 6px;
+}
+
+/* ================== 폴더 행 ================== */
+#docsTable .row-folder td {
+	background-color: #f8f9fa !important;
+	color: #111827 !important;
+	font-weight: 600 !important;
+	border-bottom: 1px solid #eeeeee !important;
+	cursor: pointer;
+}
+
+#docsTable .row-folder:hover td {
+	background-color: #e9ecef !important;
+}
+
+.folder-icon {
+	color: #111827;
+	margin-right: 6px;
+}
+
+/* ================== 파일 행 ================== */
+#docsTable .row-file td {
+	font-size: 14px;
+	color: #374151 !important;
+	border-bottom: 1px solid #f3f4f6 !important;
+}
+
+#docsTable .row-file:hover td {
+	background-color: #f9fafb !important;
+}
+
+/* 마지막 행 border 제거 */
+#docsTable tbody tr:last-child td {
+	border-bottom: none;
+}
+
+.row-file .btn-sm, .row-folder .btn-sm {
+	padding: 3px 8px;
+	font-size: 0.78rem;
+}
+
+/* 빈 상태 */
+#docsTable tbody tr td[colspan] {
+	color: #9ca3af;
+	font-size: 14px;
+}
+
+/* ================== 모달 중첩 방지 ================== */
+#projectSelectModal {
+	z-index: 1055;
+}
+
+body.modal-open .modal-backdrop+.modal-backdrop {
+	display: none;
+}
+
+/* ================== 파일 미리보기 ================== */
+.file-preview-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.file-preview-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 10px;
+	border: 1px solid #e5e7eb;
+	border-radius: 6px;
+	margin-bottom: 6px;
+	background: #f9fafb;
+	font-size: 13px;
+}
+
+.file-preview-item .file-icon {
+	font-size: 20px;
+	width: 24px;
+	text-align: center;
+	flex-shrink: 0;
+}
+
+.file-preview-item .file-info {
+	flex: 1;
+	min-width: 0;
+}
+
+.file-preview-item .file-name {
+	font-weight: 500;
+	color: #111827;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.file-preview-item .file-meta {
+	font-size: 11px;
+	color: #6b7280;
+	margin-top: 1px;
+}
+
+.file-preview-item .btn-remove-file {
+	background: none;
+	border: none;
+	color: #9ca3af;
+	cursor: pointer;
+	padding: 0 2px;
+	font-size: 16px;
+	line-height: 1.5;
+	flex-shrink: 0;
+}
+
+.file-preview-item .btn-remove-file:hover {
+	color: #ef4444;
+}
+
+.file-preview-item.is-error {
+	border-color: #fca5a5;
+	background: #fef2f2;
+}
+
+.file-preview-item.is-error .file-name {
+	color: #dc2626;
+}

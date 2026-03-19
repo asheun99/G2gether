@@ -1,0 +1,509 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org/"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{common/layouts/default_layout}"
+  layout:fragment="Content"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>일감 목록</title>
+    <link rel="stylesheet" th:href="@{/css/issue/issue-list.css}" />
+  </head>
+
+  <body>
+    <div class="x-page-title">
+      <h3 class="page-title">일감 목록</h3>
+      <div class="page-title-sub">
+        프로젝트별 일감을 조회하고 관리할 수 있습니다.
+      </div>
+    </div>
+
+    <form id="issueFilterForm" th:action="@{/issueList}" method="get">
+      <div class="issue-filters mb-3 mt-3">
+        <div class="row g-2 align-items-end">
+          <div class="col-12 col-md-3">
+            <label class="form-label">프로젝트</label>
+            <div class="input-group">
+              <input
+                type="text"
+                id="filterProjectText"
+                class="form-control"
+                placeholder="프로젝트 선택"
+                readonly
+                th:value="${projectName}"
+              />
+              <input
+                type="hidden"
+                id="filterProjectValue"
+                name="projectCode"
+                th:value="${projectCode}"
+              />
+              <button
+                type="button"
+                class="btn btn-secondary"
+                id="btnOpenProjectModal"
+              >
+                선택
+              </button>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="form-label">일감명</label>
+            <input
+              type="text"
+              id="filterTitle"
+              name="title"
+              class="form-control"
+              placeholder="일감명 입력"
+              th:value="${param.title}"
+            />
+          </div>
+
+          <div class="col-12 col-md-2">
+            <label class="form-label">유형</label>
+            <div class="input-group">
+              <input
+                type="text"
+                id="filterTypeText"
+                class="form-control"
+                placeholder="유형 선택"
+                readonly
+                th:value="${typeLabel}"
+              />
+              <input
+                type="hidden"
+                id="filterTypeValue"
+                name="typeCode"
+                th:value="${param.typeCode}"
+              />
+              <button
+                type="button"
+                class="btn btn-secondary"
+                id="btnOpenTypeModal"
+              >
+                선택
+              </button>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-2">
+            <label class="form-label">상태</label>
+            <select id="filterStatus" name="statusId" class="form-select">
+              <option
+                value=""
+                th:selected="${param.statusId == null or param.statusId == ''}"
+              >
+                전체
+              </option>
+              <option value="OB1" th:selected="${param.statusId == 'OB1'}">
+                신규
+              </option>
+              <option value="OB2" th:selected="${param.statusId == 'OB2'}">
+                진행
+              </option>
+              <option value="OB3" th:selected="${param.statusId == 'OB3'}">
+                해결
+              </option>
+              <option value="OB4" th:selected="${param.statusId == 'OB4'}">
+                반려
+              </option>
+              <option value="OB5" th:selected="${param.statusId == 'OB5'}">
+                완료
+              </option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-2">
+            <label class="form-label">우선순위</label>
+            <select id="filterPriority" name="priority" class="form-select">
+              <option
+                value=""
+                th:selected="${param.priority == null or param.priority == ''}"
+              >
+                전체
+              </option>
+              <option value="OA1" th:selected="${param.priority == 'OA1'}">
+                긴급
+              </option>
+              <option value="OA2" th:selected="${param.priority == 'OA2'}">
+                높음
+              </option>
+              <option value="OA3" th:selected="${param.priority == 'OA3'}">
+                보통
+              </option>
+              <option value="OA4" th:selected="${param.priority == 'OA4'}">
+                낮음
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row g-2 align-items-end mt-1">
+          <div class="col-12 col-md-3">
+            <label class="form-label">담당자</label>
+            <div class="input-group">
+              <input
+                type="text"
+                id="filterAssigneeText"
+                class="form-control"
+                placeholder="담당자 선택"
+                readonly
+                th:value="${assigneeName}"
+              />
+              <input
+                type="hidden"
+                id="filterAssigneeValue"
+                name="assigneeCode"
+                th:value="${param.assigneeCode}"
+              />
+              <button
+                type="button"
+                class="btn btn-secondary"
+                id="btnOpenAssigneeModal"
+              >
+                선택
+              </button>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="form-label">등록자</label>
+            <div class="input-group">
+              <input
+                type="text"
+                id="filterCreatorText"
+                class="form-control"
+                placeholder="등록자 선택"
+                readonly
+                th:value="${creatorName}"
+              />
+              <input
+                type="hidden"
+                id="filterCreatorValue"
+                name="createdByCode"
+                th:value="${param.createdByCode}"
+              />
+              <button
+                type="button"
+                class="btn btn-secondary"
+                id="btnOpenCreatorModal"
+              >
+                선택
+              </button>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="form-label">등록일</label>
+            <input
+              type="date"
+              id="filterCreatedAt"
+              name="createdAt"
+              class="form-control"
+              th:value="${param.createdAt}"
+            />
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="form-label">마감기한</label>
+            <input
+              type="date"
+              id="filterDueAt"
+              name="dueAt"
+              class="form-control"
+              th:value="${param.dueAt}"
+            />
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-success" id="btnIssueCreate">
+              <i class="fas fa-plus me-1"></i>일감등록
+            </button>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              id="btnResetFilters"
+            >
+              <i class="fas fa-redo me-1"></i>초기화
+            </button>
+
+            <button type="submit" class="btn btn-primary" id="btnApplyFilters">
+              <i class="fa-solid fa-magnifying-glass"></i>조회
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="card mb-4 issue-list-card">
+      <div
+        class="card-header d-flex align-items-center justify-content-between"
+      >
+        <div><i class="fas fa-table me-1"></i> 일감 목록</div>
+        <div class="text-muted small" id="issuePageInfo"></div>
+      </div>
+
+      <div class="card-body">
+        <div class="table-responsive">
+          <table
+            class="table table-hover align-middle text-center"
+            id="issueTable"
+          >
+            <thead class="table-light">
+              <tr>
+                <th style="width: 70px">번호</th>
+                <th>프로젝트명</th>
+                <th>일감명</th>
+                <th>유형</th>
+                <th>상태</th>
+                <th>우선순위</th>
+                <th>담당자</th>
+                <th>등록자</th>
+                <th>등록일</th>
+                <th>마감기한</th>
+                <th style="width: 56px"></th>
+              </tr>
+            </thead>
+
+            <tbody id="issueTbody">
+              <tr
+                class="issueRow"
+                th:each="issue : ${list}"
+                th:attr="
+                data-issue-code=${issue.issueCode},
+                  data-project=${issue.projectName},
+                  data-project-code=${issue.projectCode},
+                  data-project-status=${issue.projectStatus},
+                  data-project-status-name=${issue.projectStatusName},
+                  data-title=${issue.title},
+                  data-type-code=${issue.typeCode},
+                  data-status=${issue.statusName},
+                  data-priority=${issue.priorityName},
+                  data-assignee-code=${issue.assigneeCode},
+                  data-assignee=${issue.assigneeName},
+                  data-creator-code=${issue.createdByCode},
+                  data-creator=${issue.creatorName},
+                  data-created=${issue.createdAt != null ? #temporals.format(issue.createdAt,'yyyy-MM-dd') : ''},
+                  data-due=${issue.dueAt != null ? #temporals.format(issue.dueAt,'yyyy-MM-dd') : ''},
+                  data-admin-ck=${adminCk != null and adminCk[issue.issueCode] != null ? adminCk[issue.issueCode] : 'N'},
+                  data-can-modify=${canModify != null and canModify[issue.issueCode] != null ? canModify[issue.issueCode] : 'N'},
+                  data-status-id=${issue.statusId != null ? issue.statusId : ''},
+                  data-login-user-code=${loginUserCode != null ? loginUserCode : ''}"
+              >
+                <td class="col-no"></td>
+                <td th:text="${issue.projectName}" class="text-start"></td>
+                <td th:text="${issue.title}" class="text-start"></td>
+                <td
+                  th:text="${issue.typeName != null ? issue.typeName : '-'}"
+                ></td>
+                <td th:text="${issue.statusName}"></td>
+                <td th:text="${issue.priorityName}"></td>
+                <td>
+                  <span th:if="${issue.assigneeCode == null}">미할당</span>
+
+                  <a
+                    th:if="${issue.assigneeCode != null}"
+                    th:href="@{/users/{userCode}(userCode=${issue.assigneeCode})}"
+                    th:text="${issue.assigneeName}"
+                    class="user-link text-decoration-none"
+                  ></a>
+                </td>
+                <td>
+                  <a
+                    th:if="${issue.createdByCode != null}"
+                    th:href="@{/users/{userCode}(userCode=${issue.createdByCode})}"
+                    th:text="${issue.creatorName}"
+                    class="user-link text-decoration-none"
+                  ></a>
+                  <span th:if="${issue.createdByCode == null}"></span>
+                </td>
+                <td
+                  th:text="${issue.createdAt != null ? #temporals.format(issue.createdAt, 'yyyy-MM-dd') : ''}"
+                ></td>
+                <td
+                  th:text="${issue.dueAt != null ? #temporals.format(issue.dueAt, 'yyyy-MM-dd') : ''}"
+                ></td>
+                <td class="text-end pe-2 issue-actions">
+                  <div class="dropdown issue-dropdown">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-light issue-menu-btn"
+                      data-bs-toggle="dropdown"
+                      data-bs-auto-close="outside"
+                      aria-expanded="false"
+                      aria-label="일감 메뉴"
+                    >
+                      <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+
+                    <ul
+                      class="dropdown-menu dropdown-menu-end issue-dropdown-menu"
+                    >
+                      <li>
+                        <button
+                          type="button"
+                          class="dropdown-item"
+                          data-action="edit"
+                        >
+                          수정
+                        </button>
+                      </li>
+                      <li><hr class="dropdown-divider" /></li>
+                      <li>
+                        <button
+                          type="button"
+                          class="dropdown-item text-danger"
+                          data-action="delete"
+                        >
+                          삭제
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <nav class="d-flex justify-content-center mt-3 mb-3">
+          <ul class="pagination mb-0" id="issuePagination"></ul>
+        </nav>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="projectSelectModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">프로젝트 선택</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <input
+              type="text"
+              id="projectModalSearch"
+              class="form-control mb-2"
+              placeholder="프로젝트명 검색"
+            />
+            <div class="list-group" id="projectModalList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="typeSelectModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">유형 선택</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <input
+              type="text"
+              id="typeModalSearch"
+              class="form-control mb-2"
+              placeholder="유형명 검색"
+            />
+            <div id="typeModalTree" class="type-tree"></div>
+            <!-- 여기가 트리 렌더링 영역 -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="assigneeSelectModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">담당자 선택</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <input
+              type="text"
+              id="assigneeModalSearch"
+              class="form-control mb-2"
+              placeholder="담당자명 검색"
+            />
+            <div id="assigneeModalTree" class="type-tree"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="creatorSelectModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">등록자 선택</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <input
+              type="text"
+              id="creatorModalSearch"
+              class="form-control mb-2"
+              placeholder="등록자명 검색"
+            />
+            <div id="creatorModalTree" class="type-tree"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+      window.__CP__ = /*[[${session.currentProject}]]*/ null;
+    </script>
+    <script th:src="@{/js/issue/issue-list.js}"></script>
+  </body>
+</html>

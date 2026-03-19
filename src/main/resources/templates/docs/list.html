@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}">
+<head>
+<meta charset="UTF-8">
+<title>문서</title>
+<link rel="stylesheet" th:href="@{/css/docs/list.css}" />
+<link rel="stylesheet" th:href="@{/css/docs/search.css}" />
+</head>
+<body>
+	<div layout:fragment="Content">
+
+		<!-- 페이지 타이틀 -->
+		<div class="x-page-title mb-3">
+			<h3 class="page-title">문서</h3>
+			<div class="page-title-sub">문서 관리 페이지입니다.</div>
+		</div>
+
+		<!-- 검색/필터 -->
+		<div th:replace="~{docs/search :: searchCondition(view='docs/list')}"></div>
+
+
+
+		<!-- 폴더 + 파일 테이블 -->
+		<div class="card docs-list-card" style="position: relative;">
+		
+			<!-- 로딩 스피너 -->
+			<div id="docsLoadingSpinner"
+				class="d-flex justify-content-center align-items-center"
+				style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.7); z-index: 1000; display: none !important;">
+				<div class="spinner-border text-primary" role="status"
+					style="width: 3rem; height: 3rem;">
+					<span class="visually-hidden">Loading...</span>
+				</div>
+			</div>
+
+			<div class="card-body p-0"
+				style="overflow: hidden; border-radius: 0 0 12px 12px;">
+				<table class="table table-hover mb-0" id="docsTable">
+					<colgroup>
+						<col style="width: 25%">
+						<col style="width: 15%">
+						<col style="width: 15%">
+						<col style="width: 15%">
+						<col style="width: 15%">
+						<col style="width: 15%">
+					</colgroup>
+					<thead>
+						<tr>
+							<th>구분</th>
+							<th>파일 크기</th>
+							<th class="text-center">다운로드</th>
+							<th>파일 등록일</th>
+							<th>파일 등록자</th>
+							<th class="text-center">삭제</th>
+						</tr>
+					</thead>
+					<tbody id="docsTableBody">
+						<tr th:if="${#lists.isEmpty(docsList)}">
+							<td colspan="6" class="text-center py-4">등록된 문서가 없습니다.</td>
+						</tr>
+						<tr th:unless="${#lists.isEmpty(docsList)}"
+							th:each="doc : ${docsList}" class="doc-row"
+							th:data-project-code="${doc.projectCode}"
+							th:data-project-name="${doc.projectName}"
+							th:data-file-code="${doc.fileCode}"
+							th:data-file-name="${doc.originalName}"
+							th:data-folder-code="${doc.folderCode}"
+							th:data-folder-name="${doc.folderName}"
+							th:data-folder-path="${doc.folderPath}"
+							th:data-folder-depth="${doc.folderDepth}"
+							th:data-size="${doc.sizeBytes}"
+							th:data-uploaded-at="${doc.uploadedAtStr}"
+							th:data-uploader-code="${doc.createdCode}"
+							th:data-uploader="${doc.uploaderName}"
+							th:data-row-type="${doc.rowType}" style="display: none">
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+
+	<th:block layout:fragment="pageScript">
+		<script th:inline="javascript">
+			window.currentProject = /*[[${session.currentProject}]]*/null;
+			//console.log(currentProject);
+		</script>
+		<script th:src="@{/js/common/toast.js}"></script>
+		<script th:src="@{/js/docs/search.js}"></script>
+		<script th:src="@{/js/docs/list.js}"></script>
+	</th:block>
+
+</body>
+</html>

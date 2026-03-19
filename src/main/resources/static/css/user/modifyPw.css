@@ -1,0 +1,82 @@
+/* =========================================================
+   Modify Password - /static/css/user/modifyPw.css
+   ========================================================= */
+
+/* 타이틀 */
+.x-page-title {
+  margin: 14px 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.x-page-title .page-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.2px;
+}
+
+.x-page-title .page-title-sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* 카드(일감목록/내정보 톤) */
+.card.mb-4 {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+/* 카드 헤더(회색 톤 통일) */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+
+  background-color: rgb(224, 229, 243);
+  color: #111827;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* 카드 바디 */
+.modify-card-body {
+  padding: 14px;
+}
+
+.modify-hint-body {
+  padding: 14px;
+}
+
+/* 폼 박스(내 정보 페이지의 filters 톤) */
+.modify-filters {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px 14px 10px;
+  background: #f9fafb;
+}
+
+.modify-filters .form-label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #111827;
+}
+
+/* 안내 리스트 */
+.modify-hint {
+  padding-left: 18px;
+  color: #111827;
+}
+
+.modify-hint li {
+  margin: 6px 0;
+  font-size: 14px;
+}
+
+/* 버튼 간격 */
+.btn {
+  border-radius: 8px;
+}

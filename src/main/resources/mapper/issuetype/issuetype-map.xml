@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.yedam.app.issuetype.mapper.IssueTypeMapper">
+
+	<!-- 유형 타입 조회 -->
+	<select id="selectAllIssueType" resultType="IssueTypeVO">
+		SELECT
+		    t.type_code,
+		    t.project_code,
+		    p.project_name,
+		    t.type_name,
+		    t.par_type_code,
+		    t.start_at,
+		    t.end_at,
+		    t.is_deleted,
+		    -- 부모 이름 가져오기
+		    (SELECT pt.type_name
+		       FROM types pt
+		      WHERE pt.type_code = t.par_type_code) AS par_type_name,
+		    LEVEL
+		FROM types t
+		JOIN projects p ON t.project_code = p.project_code
+		WHERE t.is_deleted != 1
+		  AND p.status != 'OD2'
+		START WITH t.par_type_code IS NULL
+		CONNECT BY PRIOR t.type_code = t.par_type_code
+		ORDER SIBLINGS BY t.type_code
+	</select>
+	
+	<!-- 유형타입 수정 삭제 유효성 체크 -->
+	<select id="countIssuesByTypeCode" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		FROM   issues
+		WHERE  type_code  = #{typeCode}
+	</select>
+	
+	<!-- 유형 타입 조회 -->
+	<select id="selectListIssueType" resultType="IssueTypeListVO">
+		SELECT 
+		    i.issue_code
+		    ,i.title
+		    ,c.code_name
+		    ,u.name
+		    ,progress
+		    ,COUNT(*) OVER() as total_cnt
+		FROM issues i 
+		JOIN common_code c ON i.priority = c.code_id
+		JOIN users u ON i.assignee_code = u.user_code
+		WHERE  type_code  = #{typeCode}
+	</select>
+
+	<!-- 유형 타입 추가 -->
+	<insert id="addIssueType" parameterType="IssueTypeVO">
+		<selectKey keyProperty="typeCode" resultType="int" order="BEFORE">
+			SELECT NVL(MAX(type_code), 0) + 1 FROM types
+		</selectKey>
+		INSERT INTO types (type_code, project_code, type_name, par_type_code, start_at, end_at, is_deleted)
+		VALUES (
+			#{typeCode},
+			#{projectCode},
+			#{typeName},
+			#{parTypeCode},
+			#{startAt},
+			#{endAt},
+			'0'
+		)
+	</insert>
+
+	<!-- 유형 타입 수정 -->
+	<update id="modifyIssueType" parameterType="IssueTypeVO">
+		UPDATE types
+		SET
+			type_name = #{typeName},
+			project_code = #{projectCode},
+			par_type_code = #{parTypeCode},
+			start_at = #{startAt},
+			end_at = #{endAt}
+		WHERE
+		type_code = #{typeCode}
+	</update>
+
+	<!-- 유형 타입 삭제 (소프트) -->
+	<update id="deleteIssueType">
+		UPDATE types
+		SET is_deleted = '1'
+		WHERE type_code =
+		#{typeCode}
+	</update>
+</mapper>

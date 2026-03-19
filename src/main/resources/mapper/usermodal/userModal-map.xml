@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yedam.app.usermodal.mapper.UserModalMapper">
+
+  <!-- 등록/수정: 선택한 프로젝트 참여자 -->
+  <select id="selectUsersByProject"
+          parameterType="long"
+          resultType="UserModalVO">
+    SELECT DISTINCT
+           v.user_code AS userCode,
+           u.name      AS userName
+      FROM vw_user_auth v
+      JOIN users u
+        ON u.user_code = v.user_code
+     WHERE v.project_code = #{projectCode}
+       AND u.is_lock != 1
+     ORDER BY u.name
+  </select>
+
+  <!-- 목록: 로그인 사용자가 참여한 프로젝트들의 전체 담당자들 -->
+  <select id="selectAssigneeByMyProjects"
+          parameterType="long"
+          resultType="UserModalVO">
+    SELECT DISTINCT
+	       i.assignee_code AS userCode,
+	       u.name          AS userName,
+	       i.project_code  AS projectCode,
+	       p.project_name  AS projectName
+	FROM issues i
+	JOIN users u
+	  ON u.user_code = i.assignee_code
+	JOIN projects p
+	  ON p.project_code = i.project_code
+	WHERE u.is_lock != 1
+	  AND i.assignee_code IS NOT NULL
+	  AND EXISTS (
+	        SELECT 1
+	        FROM vw_user_auth v
+	        WHERE v.user_code = #{loginUserCode}
+	          AND v.project_code = i.project_code
+	          AND (
+                    (v.admin_ck = 'Y' AND p.status IN ('OD1','OD3'))
+                 OR (v.admin_ck = 'N' AND p.status = 'OD1')
+              )
+	  )
+	ORDER BY projectCode, userName
+
+  </select>
+  
+  <!-- 목록: 로그인 사용자가 참여한 프로젝트들의 전체 등록자들 -->
+  <select id="selectCreatorByMyProjects"
+          parameterType="long"
+          resultType="UserModalVO">
+    SELECT DISTINCT
+	       i.created_by_code AS userCode,
+	       u.name            AS userName,
+	       i.project_code    AS projectCode,
+	       p.project_name    AS projectName
+	FROM issues i
+	JOIN users u
+	  ON u.user_code = i.created_by_code
+	JOIN projects p
+	  ON p.project_code = i.project_code
+	WHERE u.is_lock != 1
+	  AND EXISTS (
+	        SELECT 1
+	        FROM vw_user_auth v
+	        WHERE v.user_code = #{loginUserCode}
+	          AND v.project_code = i.project_code
+	          AND (
+                    (v.admin_ck = 'Y' AND p.status IN ('OD1','OD3'))
+                 OR (v.admin_ck = 'N' AND p.status = 'OD1')
+              )
+	  )
+	ORDER BY projectCode, userName
+
+  </select>
+
+<!-- 공지용 -->
+<select id="selectNoticeCreatorByMyProjects"
+        parameterType="long"
+        resultType="UserModalVO">
+  SELECT DISTINCT
+         n.user_code     AS userCode,
+         u.name          AS userName,
+         n.project_code  AS projectCode,
+         p.project_name  AS projectName
+    FROM notices n
+    JOIN users u
+      ON u.user_code = n.user_code
+    JOIN projects p
+      ON p.project_code = n.project_code
+   WHERE u.is_lock != 1
+     AND EXISTS (
+          SELECT 1
+            FROM vw_user_auth v
+           WHERE v.user_code = #{loginUserCode}
+             AND v.project_code = n.project_code
+             AND (
+                   (v.admin_ck = 'Y' AND p.status IN ('OD1','OD3'))
+                OR (v.admin_ck = 'N' AND p.status = 'OD1')
+             )
+     )
+   ORDER BY projectCode, userName
+</select>
+
+<!-- 작업내역용 -->
+<select id="selectUsersInMyProjects"
+        parameterType="long"
+        resultType="UserModalVO">
+  SELECT DISTINCT
+         v2.user_code    AS userCode,
+         u.name          AS userName,
+         v2.project_code AS projectCode,
+         p.project_name  AS projectName
+    FROM vw_user_auth v2
+    JOIN users u
+      ON u.user_code = v2.user_code
+    JOIN projects p
+      ON p.project_code = v2.project_code
+   WHERE u.is_lock != 1
+     AND EXISTS (
+          SELECT 1
+            FROM vw_user_auth v
+           WHERE v.user_code = #{loginUserCode}
+             AND v.project_code = v2.project_code
+             AND (
+                   (v.admin_ck = 'Y' AND p.status IN ('OD1','OD3'))
+                OR (v.admin_ck = 'N' AND p.status = 'OD1')
+             )
+     )
+   ORDER BY projectCode, userName
+</select>
+
+<!-- 소요시간용 -->
+<select id="selectWorklogWorkersByMyProjects"
+        parameterType="long"
+        resultType="UserModalVO">
+  SELECT DISTINCT
+         wl.worker_code  AS userCode,
+         u.name          AS userName,
+         i.project_code  AS projectCode,
+         p.project_name  AS projectName
+    FROM work_logs wl
+    JOIN issues i
+      ON i.issue_code = wl.issue_code
+    JOIN projects p
+      ON p.project_code = i.project_code
+    JOIN users u
+      ON u.user_code = wl.worker_code
+   WHERE u.is_lock != 1
+     AND wl.worker_code IS NOT NULL
+     AND EXISTS (
+          SELECT 1
+            FROM vw_user_auth v
+           WHERE v.user_code = #{loginUserCode}
+             AND v.project_code = i.project_code
+             AND (
+                   (v.admin_ck = 'Y' AND p.status IN ('OD1','OD3'))
+                OR (v.admin_ck = 'N' AND p.status = 'OD1')
+             )
+     )
+   ORDER BY projectCode, userName
+</select>
+
+<!-- 문서용 -->
+<select id="selectDocsCreatorByMyProjects"
+        parameterType="long"
+        resultType="UserModalVO">
+  SELECT DISTINCT
+         da.user_code    AS userCode,
+         u.name          AS userName,
+         da.project_code  AS projectCode,
+         p.project_name  AS projectName
+    FROM documents_attachments da
+    JOIN users u
+      ON u.user_code = da.user_code
+    JOIN projects p
+      ON p.project_code = da.project_code
+   WHERE u.is_lock != 1
+     AND da.user_code IS NOT NULL
+     AND EXISTS (
+          SELECT 1
+            FROM vw_user_auth v
+           WHERE v.user_code = #{loginUserCode}
+             AND v.project_code = da.project_code
+             AND (
+                   (v.admin_ck = 'Y' AND p.status IN ('OD1','OD3'))
+                OR (v.admin_ck = 'N' AND p.status = 'OD1')
+             )
+     )
+   ORDER BY projectCode, userName
+</select>
+</mapper>

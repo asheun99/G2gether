@@ -1,0 +1,223 @@
+// ============================================
+//  전체 선택
+// ============================================
+function setupSelectAll() {
+	const authTypes = [
+		{ allId: 'readSelectAll', itemClass: 'rd_rol' },
+		{ allId: 'writeSelectAll', itemClass: 'wr_rol' },
+		{ allId: 'modifySelectAll', itemClass: 'md_rol' },
+		{ allId: 'deleteSelectAll', itemClass: 'del_rol' }
+	];
+
+	authTypes.forEach(auth => {
+		const selectAllCheckbox = document.getElementById(auth.allId);
+		const itemCheckboxes = document.querySelectorAll(`.${auth.itemClass}`);
+
+		if (!selectAllCheckbox) return;
+
+		// 1. 헤더 체크박스 클릭 시 전체 선택/해제
+		selectAllCheckbox.addEventListener('change', function() {
+			itemCheckboxes.forEach(checkbox => {
+				checkbox.checked = this.checked;
+			});
+		});
+
+		// 2. 개별 체크박스 클릭 
+		itemCheckboxes.forEach(checkbox => {
+			checkbox.addEventListener('change', function() {
+				const allChecked = Array.from(itemCheckboxes).every(cb => cb.checked);
+				const someChecked = Array.from(itemCheckboxes).some(cb => cb.checked);
+
+				selectAllCheckbox.checked = allChecked;
+				// 하나라도 체크되어 있지만 전체는 아닐 때 '-' 표시
+				selectAllCheckbox.indeterminate = someChecked && !allChecked;
+			});
+		});
+	});
+
+	// ============================================
+	//  가로(행) 전체 선택 처리
+	// ============================================
+	const rowCheckboxes = document.querySelectorAll('.row-check');
+
+	rowCheckboxes.forEach(rowHeader => {
+		rowHeader.addEventListener('change', function() {
+			const parentRow = this.closest('tr');
+			const rowItems = parentRow.querySelectorAll('input[type="checkbox"]:not(.row-check)');
+
+			rowItems.forEach(item => {
+				item.checked = this.checked;
+				item.dispatchEvent(new Event('change'));
+			});
+		});
+	});
+
+	// ============================================
+	//  표 전체 선택
+	// ============================================
+	const masterCheck = document.querySelector('.all-check');
+	// 테이블 모든 체크박스들 선택
+	const allTableChecks = document.querySelectorAll('#projectTbody input[type="checkbox"]');
+	// 헤더에 있는 체크박스들
+	const columnHeadChecks = document.querySelectorAll('thead input[type="checkbox"]:not(.all-check)');
+
+	if (masterCheck) {
+		masterCheck.addEventListener('change', function() {
+			const isChecked = this.checked;
+
+			allTableChecks.forEach(cb => {
+				cb.checked = isChecked;
+				cb.dispatchEvent(new Event('change'));
+			});
+
+			columnHeadChecks.forEach(cb => {
+				cb.checked = isChecked;
+				cb.indeterminate = false; // '-' 표시 초기화
+			});
+		});
+	}
+}
+
+
+function registerRole() {
+	// 1. 입력값 가져오기
+	const roleName = document.getElementById('roleName').value.trim();
+	const explanation = document.getElementById('explanation').value.trim();
+	const adminCheck = document.getElementById('adminCheck').checked;
+	// 유효성 초기화
+	clearErrors();
+
+	let isValid = true;
+
+	// 역할명 체크 
+	if (!roleName) {
+		showError('roleNameError', '역할명을 입력해주세요.');
+		isValid = false;
+	} else if (roleName.length > 100) {
+		showError('roleNameError', '역할명은 100자 이하로 입력해주세요.');
+		isValid = false;
+	}
+
+	// 설명 체크 (200자 이하)
+	if (explanation.length > 200) {
+		showError('explanationError', '설명은 200자 이하로 입력해주세요.');
+		isValid = false;
+	}
+
+	if (!isValid) return;
+
+
+
+	// 3. 권한 데이터 수집
+	const permissions = [];
+	const rows = document.querySelectorAll('#projectTbody tr');
+
+	rows.forEach(row => {
+		const category = row.cells[0].textContent.trim();
+		const rdRol = row.querySelector('.rd_rol').checked ? 'Y' : 'N';
+		const wrRol = row.querySelector('.wr_rol').checked ? 'Y' : 'N';
+		const moRol = row.querySelector('.md_rol').checked ? 'Y' : 'N';
+		const delRol = row.querySelector('.del_rol').checked ? 'Y' : 'N';
+
+		permissions.push({
+			category: category,
+			rdRol: rdRol,
+			wrRol: wrRol,
+			moRol: moRol,
+			delRol: delRol
+		});
+	});
+
+	// 4. 서버로 전송할 데이터 구성
+	const requestData = {
+		roleName: roleName,
+		explanation: explanation,
+		adminCk: adminCheck ? 'Y' : 'N',
+		permissions: permissions
+	};
+
+	// 5. AJAX 요청
+	fetch('/api/auth/register', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-Requested-With': 'XMLHttpRequest'
+		},
+		body: JSON.stringify(requestData)
+	})
+		.then(response => {
+			if (response.status === 403) {
+				showToast('권한이 없습니다.');
+				return null;
+			}
+			return response.json();
+		})
+		.then(data => {
+			if (!data) return;
+			if (data.success) {
+				showToast(data.message);
+				window.location.href = '/auth'; // 역할 목록 페이지로 이동
+			} else {
+				showToast(data.message);
+			}
+		})
+		.catch(error => {
+			console.error('Error:', error);
+			showToast('역할 등록 중 오류가 발생했습니다.');
+		});
+}
+
+// 역할명 길이 체크 
+function showError(id, message) {
+	const el = document.getElementById(id);
+	if (el) {
+		el.textContent = message;
+		el.style.display = 'block';
+	}
+}
+// 설명 길이체크
+function clearErrors() {
+	['roleNameError', 'explanationError'].forEach(id => {
+		const el = document.getElementById(id);
+		if (el) {
+			el.textContent = '';
+			el.style.display = 'none';
+		}
+	});
+}
+// 역할 명 문자 수 체크
+document.getElementById('roleName').addEventListener('input', function() {
+	document.getElementById('roleNameCount').textContent = this.value.length;
+});
+// 설명 문자 수 체크
+document.getElementById('explanation').addEventListener('input', function() {
+	document.getElementById('explanationCount').textContent = this.value.length;
+});
+// ============================================
+// 페이지 로드 시 초기화
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+	setupSelectAll();
+	// ============================================
+	// 프로젝트 카테고리 등록(wrRol) 체크박스 비활성화
+	// ============================================
+	const rows = document.querySelectorAll('#projectTbody tr');
+
+	rows.forEach(row => {
+		const category = row.cells[0].textContent.trim();
+
+		if (category === '프로젝트') {
+			const wrRolCb = row.querySelector('.wr_rol');
+			wrRolCb.checked = false;
+			wrRolCb.disabled = true;
+		}
+	});
+	// 권한 등록 버튼에 이벤트 리스너 추가
+	const registerButton = document.querySelector('#registerRoleBtn');
+	if (registerButton) {
+		registerButton.onclick = function(e) {
+			e.preventDefault();
+			registerRole();
+		};
+	}
+});

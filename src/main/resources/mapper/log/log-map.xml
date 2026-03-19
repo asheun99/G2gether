@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yedam.app.log.mapper.LogMapper">
+<insert id="insertLog" parameterType="LogVO">
+    <selectKey keyProperty="logCode" resultType="long" order="BEFORE">
+      SELECT NVL(MAX(log_code), 0) + 1
+      FROM logs
+    </selectKey>
+
+    INSERT INTO logs (
+      log_code,
+      project_code,
+      user_code,
+      action_type,
+      target_type,
+      target_code,
+      created_at,
+      meta
+    ) VALUES (
+      #{logCode},
+      #{projectCode},
+      #{userCode},
+      #{actionType},
+      #{targetType},
+      #{targetCode},
+      SYSDATE,
+      #{meta, jdbcType=CLOB}
+    )
+  </insert>
+
+<select id="selectLogsByTarget" resultType="LogVO">
+  SELECT
+    l.log_code,
+    l.project_code,
+    l.user_code,
+    u.name AS user_name,
+    l.action_type,
+    l.target_type,
+    l.target_code,
+    l.created_at,
+    l.meta
+  FROM logs l
+  LEFT JOIN users u
+    ON u.user_code = l.user_code
+  WHERE l.target_type = #{targetType}
+    AND l.target_code = #{targetCode}
+  ORDER BY l.created_at DESC, l.log_code DESC
+</select>
+
+<select id="selectLogs" resultType="LogVO">
+  SELECT
+    l.log_code     AS logCode,
+    l.project_code AS projectCode,
+    p.project_name AS projectName,
+    l.user_code    AS userCode,
+    u.name         AS userName,
+    l.action_type  AS actionType,
+    l.target_type  AS targetType,
+    l.target_code  AS targetCode,
+    l.created_at   AS createdAt,
+    l.meta         AS meta,
+    COALESCE(i.title, n.title) AS title
+  FROM logs l
+  JOIN projects p
+    ON p.project_code = l.project_code
+  LEFT JOIN users u
+    ON u.user_code = l.user_code
+
+  LEFT JOIN issues i
+    ON l.target_type = 'ISSUE'
+   AND i.issue_code = l.target_code
+
+  LEFT JOIN notices n
+    ON l.target_type = 'NOTICE'
+   AND n.notice_code = l.target_code
+
+  /* 로그인 사용자가 속한 프로젝트만 (+ 관리자면 종료(OD3)까지) */
+  JOIN vw_user_auth a
+    ON a.project_code = l.project_code
+   AND a.user_code = #{loginUserCode}
+
+  WHERE 1=1
+    AND (
+          (a.admin_ck = 'Y' AND a.status IN ('OD1','OD3'))
+       OR (a.admin_ck = 'N' AND a.status = 'OD1')
+    )
+
+  <if test="cond.projectCode != null">
+    AND l.project_code = #{cond.projectCode}
+  </if>
+
+  <if test="cond.userCode != null">
+    AND l.user_code = #{cond.userCode}
+  </if>
+
+  <!-- 기간 -->
+  <if test="cond.fromDate != null">
+    AND l.created_at >= #{cond.fromDate}
+  </if>
+  <if test="cond.toDate != null">
+    AND l.created_at &lt; (#{cond.toDate} + 1)  <!-- toDate 포함 -->
+  </if>
+
+  <!-- 타입 체크박스(ISSUE/NOTICE/DOC ...) -->
+  <if test="targetTypes != null and targetTypes.size() > 0">
+    AND l.target_type IN
+    <foreach collection="targetTypes" item="t" open="(" separator="," close=")">
+      #{t}
+    </foreach>
+  </if>
+
+  ORDER BY l.created_at DESC, l.log_code DESC
+</select>
+
+</mapper>

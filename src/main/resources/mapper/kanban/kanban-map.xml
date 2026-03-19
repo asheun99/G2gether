@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yedam.app.kanban.mapper.KanbanMapper">
+
+  <select id="selectKanbanIssuesByScope" resultType="IssueVO">
+    SELECT
+      i.issue_code AS issueCode,
+      i.project_code AS projectCode,
+
+      i.status_code AS statusCode,
+      s.code_id AS statusId,
+      cs.code_name AS statusName,
+
+      i.title AS title,
+      i.priority AS priority,
+      cp.code_name AS priorityName,
+
+      i.assignee_code AS assigneeCode,
+      au.name AS assigneeName,
+
+      i.created_by_code AS createdByCode,
+      cu.name AS creatorName,
+
+      i.created_at AS createdAt,
+      i.due_at AS dueAt,
+      i.position AS position,
+
+      CASE
+        WHEN i.due_at IS NOT NULL
+         AND i.due_at &lt; TRUNC(SYSDATE) THEN 100
+        ELSE i.progress
+      END AS progress,
+
+      p.project_name AS projectName,
+      p.status AS projectStatus,
+
+      i.type_code AS typeCode,
+      t.type_name AS typeName
+
+    FROM issues i
+    JOIN status s
+      ON s.status_code = i.status_code
+     AND s.project_code = i.project_code
+    LEFT JOIN users au
+      ON au.user_code = i.assignee_code
+    LEFT JOIN users cu
+      ON cu.user_code = i.created_by_code
+    LEFT JOIN projects p
+      ON p.project_code = i.project_code
+    LEFT JOIN common_code cs
+      ON cs.code_id = s.code_id
+    LEFT JOIN common_code cp
+      ON cp.code_id = i.priority
+    LEFT JOIN types t
+      ON t.type_code = i.type_code
+    WHERE 1 = 1
+
+    <if test="projectCode != null">
+      AND i.project_code = #{projectCode}
+    </if>
+
+    <choose>
+      <when test='"Y".equals(sysCk)'>
+        AND i.project_code IN
+        <foreach collection="allProjectCodes" item="code" open="(" separator="," close=")">
+          #{code}
+        </foreach>
+        AND p.status IN ('OD1', 'OD3')
+      </when>
+
+      <otherwise>
+        AND (
+          <if test="adminProjectCodes != null and adminProjectCodes.size() > 0">
+            (
+              i.project_code IN
+              <foreach collection="adminProjectCodes" item="code" open="(" separator="," close=")">
+                #{code}
+              </foreach>
+              AND p.status IN ('OD1', 'OD3')
+            )
+          </if>
+
+          <if test="adminProjectCodes != null and adminProjectCodes.size() > 0 and readableProjectCodes != null and readableProjectCodes.size() > 0">
+            OR
+          </if>
+
+          <if test="readableProjectCodes != null and readableProjectCodes.size() > 0">
+            (
+              i.project_code IN
+              <foreach collection="readableProjectCodes" item="code" open="(" separator="," close=")">
+                #{code}
+              </foreach>
+              AND p.status = 'OD1'
+            )
+          </if>
+        )
+      </otherwise>
+    </choose>
+
+    <choose>
+      <when test='"ME".equals(viewScope)'>
+        AND i.assignee_code = #{userCode}
+      </when>
+
+      <when test='"ME_PLUS_CREATED".equals(viewScope)'>
+        AND (i.assignee_code = #{userCode} OR i.created_by_code = #{userCode})
+      </when>
+
+      <otherwise>
+        AND (
+          i.assignee_code = #{userCode}
+          OR i.created_by_code = #{userCode}
+
+          <if test="adminProjectCodes != null and adminProjectCodes.size() > 0">
+            OR i.project_code IN
+            <foreach collection="adminProjectCodes" item="code" open="(" separator="," close=")">
+              #{code}
+            </foreach>
+          </if>
+        )
+      </otherwise>
+    </choose>
+
+    ORDER BY
+      s.code_id,
+      COALESCE(i.position, 999999),
+      i.issue_code DESC
+  </select>
+
+  <update id="updateIssueStatusAndPosition">
+    UPDATE issues i
+    SET
+      i.status_code = (
+        SELECT s.status_code
+        FROM status s
+        WHERE s.project_code = #{projectCode}
+          AND s.code_id = #{toStatusCode}
+      ),
+      i.position = #{position},
+
+      i.started_at = CASE
+        WHEN i.started_at IS NULL
+         AND #{toStatusCode} != 'OB1'
+         AND (
+           SELECT s0.code_id
+           FROM status s0
+           WHERE s0.status_code = i.status_code
+             AND s0.project_code = i.project_code
+         ) = 'OB1'
+        THEN SYSTIMESTAMP
+        ELSE i.started_at
+      END,
+
+      i.progress = CASE
+        WHEN i.due_at IS NOT NULL
+         AND i.due_at &lt; TRUNC(SYSDATE)
+        THEN 100
+        WHEN #{toStatusCode} = 'OB1' THEN 0
+        WHEN #{toStatusCode} = 'OB3' THEN 95
+        WHEN #{toStatusCode} = 'OB4' THEN 50
+        WHEN #{toStatusCode} = 'OB5' THEN 100
+        ELSE i.progress
+      END,
+
+      i.resolved_at = CASE
+        WHEN #{toStatusCode} = 'OB5'
+         AND i.resolved_at IS NULL
+        THEN SYSTIMESTAMP
+        ELSE i.resolved_at
+      END,
+
+      i.updated_at = SYSTIMESTAMP
+    WHERE i.issue_code = #{issueCode}
+  </update>
+
+  <update id="batchUpdatePositions">
+    BEGIN
+    <foreach collection="list" item="it">
+      UPDATE issues i
+      SET i.position = #{it.position},
+          i.updated_at = SYSTIMESTAMP
+      WHERE i.issue_code = #{it.issueCode};
+    </foreach>
+    END;
+  </update>
+
+  <update id="updateIssueProgress">
+    UPDATE issues i
+    SET i.progress = CASE
+      WHEN i.due_at IS NOT NULL
+       AND i.due_at &lt; TRUNC(SYSDATE)
+      THEN 100
+      ELSE #{progress}
+    END,
+    i.updated_at = SYSTIMESTAMP
+    WHERE i.issue_code = #{issueCode}
+      AND i.project_code = #{projectCode}
+  </update>
+
+  <select id="selectIssueForAuth" resultType="IssueVO">
+    SELECT
+      i.issue_code AS issueCode,
+      i.project_code AS projectCode,
+      i.assignee_code AS assigneeCode,
+      s.code_id AS statusId
+    FROM issues i
+    JOIN status s
+      ON s.status_code = i.status_code
+     AND s.project_code = i.project_code
+    JOIN projects p
+      ON p.project_code = i.project_code
+    WHERE i.project_code = #{projectCode}
+      AND i.issue_code = #{issueCode}
+
+    <choose>
+      <when test='"Y".equals(sysCk)'>
+        AND i.project_code IN
+        <foreach collection="allProjectCodes" item="code" open="(" separator="," close=")">
+          #{code}
+        </foreach>
+        AND p.status IN ('OD1', 'OD3')
+      </when>
+
+      <otherwise>
+        AND (
+          <if test="adminProjectCodes != null and adminProjectCodes.size() > 0">
+            (
+              i.project_code IN
+              <foreach collection="adminProjectCodes" item="code" open="(" separator="," close=")">
+                #{code}
+              </foreach>
+              AND p.status IN ('OD1', 'OD3')
+            )
+          </if>
+
+          <if test="adminProjectCodes != null and adminProjectCodes.size() > 0 and readableProjectCodes != null and readableProjectCodes.size() > 0">
+            OR
+          </if>
+
+          <if test="readableProjectCodes != null and readableProjectCodes.size() > 0">
+            (
+              i.project_code IN
+              <foreach collection="readableProjectCodes" item="code" open="(" separator="," close=")">
+                #{code}
+              </foreach>
+              AND p.status = 'OD1'
+            )
+          </if>
+        )
+      </otherwise>
+    </choose>
+  </select>
+
+</mapper>

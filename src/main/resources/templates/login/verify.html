@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<th:block th:replace="~{common/configs/default_configs :: BootStrap}"></th:block>
+<title>verify</title>
+</head>
+<body class="sb-nav-fixed d-flex flex-column min-vh-100">
+	<div id="layoutAuthentication_content" class="flex-grow-1">
+		<main class="d-flex align-items-center justify-content-center h-100">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-5">
+						<div class="card shadow-lg border-0 rounded-lg">
+							<div class="card-header">
+								<h3 class="text-center font-weight-light my-4">메일인증</h3>
+							</div>
+							<div class="card-body">
+								<form th:action="@{/findPw/verify}" method="post">
+									<div class="form-floating mb-3">
+										<input class="form-control" id="inputOtp" name="inputOtp"
+											type="text" inputmode="numeric" pattern="[0-9]*"
+											maxlength="6" placeholder="인증번호"
+											oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+										<label for="inputOtp">인증번호6자리</label>
+									</div>
+
+									<div class="position-relative mt-2 mb-3" style="height: 24px;">
+
+										<!-- 왼쪽 OTP 재발송 -->
+										<a
+											class="small position-absolute top-50 start-0 translate-middle-y"
+											href="#" id="btnResendOtp"> 인증번호 재발송 </a>
+
+										<!-- 가운데 타이머 -->
+										<small id="expiresTimer"
+											class="text-muted position-absolute top-50 start-50 translate-middle">
+										</small>
+
+										<!-- 오른쪽 로그인 링크 -->
+										<a
+											class="small position-absolute top-50 end-0 translate-middle-y"
+											th:href="@{/login}"> 로그인으로 </a>
+
+									</div>
+
+									<div
+										class="d-flex align-items-center justify-content-center mt-4 mb-0">
+										<button type="submit" class="btn btn-primary">확인</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+
+	<!-- 인증 실패 모달 -->
+	<div class="modal fade" id="verifyFailModal" tabindex="-1"
+		aria-labelledby="verifyFailModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h5 class="modal-title" id="verifyFailModalLabel">인증 실패</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body text-center">
+					<p th:text="${verifyErrorMsg}">인증번호가 틀렸습니다.</p>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary"
+						data-bs-dismiss="modal">확인</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<footer class="py-4 bg-light mt-auto"
+		th:insert="~{common/fragments/default_footer :: DefaultFooter}"></footer>
+	<th:block
+		th:replace="~{common/configs/default_configs :: BottomScript}"></th:block>
+
+	<script th:inline="javascript">
+  // 초기 만료시간(서버 렌더)
+  let expiresAt = /*[[${expiresAt}]]*/ null;
+
+  const redirectUrl = /*[[@{/findPw}]]*/ "/findPw";
+  const resendUrl   = /*[[@{/findPw/resend}]]*/ "/findPw/resend";
+
+  let intervalId = null;
+
+  function pad2(n){ return String(n).padStart(2,'0'); }
+
+  function formatLeft(ms){
+    const totalSec = Math.max(0, Math.floor(ms / 1000));
+    const min = Math.floor(totalSec / 60);
+    const sec = totalSec % 60;
+    return `${pad2(min)}:${pad2(sec)}`;
+  }
+
+  function stopTimer(){
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+  }
+
+  function startTimer(){
+    const timerEl = document.getElementById("expiresTimer");
+    if (!expiresAt || !timerEl) return;
+
+    // 상태 초기화
+    timerEl.classList.remove("text-danger");
+    timerEl.classList.add("text-muted");
+
+    const tick = () => {
+      const left = expiresAt - Date.now();
+
+      if (left <= 0) {
+        timerEl.textContent = "인증 시간이 만료되었습니다";
+        timerEl.classList.remove("text-muted");
+        timerEl.classList.add("text-danger");
+
+        stopTimer();
+
+        setTimeout(() => {
+          window.location.replace(redirectUrl);
+        }, 1500);
+        return;
+      }
+
+      timerEl.textContent = formatLeft(left);
+    };
+
+    stopTimer();
+    tick();
+    intervalId = setInterval(tick, 1000);
+  }
+
+  async function resendOtp(){
+    const btn = document.getElementById("btnResendOtp");
+    if (!btn) return;
+
+    // 연타 방지
+    if (btn.dataset.busy === "1") return;
+    btn.dataset.busy = "1";
+    btn.style.pointerEvents = "none";
+    btn.style.opacity = "0.6";
+
+    try{
+      const res = await fetch(resendUrl, {
+        method: "POST",
+        headers: { "X-Requested-With": "fetch" }
+      });
+
+      if (!res.ok) throw new Error("resend failed: " + res.status);
+
+      const data = await res.json();
+      if (!data || data.ok !== true) throw new Error(data?.msg || "resend failed");
+
+      // ✅ 새 만료시간으로 갱신 + 타이머 재시작
+      expiresAt = Number(data.expiresAt);
+      startTimer();
+
+    } catch(e){
+      console.error(e);
+      alert("재발송에 실패했습니다. 다시 시도해주세요.");
+    } finally{
+      btn.dataset.busy = "0";
+      btn.style.pointerEvents = "";
+      btn.style.opacity = "";
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    startTimer();
+
+    const btn = document.getElementById("btnResendOtp");
+    if (btn) {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        resendOtp();
+      });
+    }
+  });
+</script>
+
+	<script
+		th:if="${verifyErrorMsg != null and #strings.length(#strings.trim(verifyErrorMsg)) > 0}">
+		document.addEventListener("DOMContentLoaded", function() {
+			const modal = new bootstrap.Modal(document
+					.getElementById('verifyFailModal'));
+			modal.show();
+		});
+	</script>
+
+
+
+</body>
+</html>

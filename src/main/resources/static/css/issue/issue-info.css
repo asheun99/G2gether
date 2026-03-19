@@ -1,0 +1,600 @@
+/* /css/issue/issue-info.css */
+
+:root {
+  --border: #e6e8ee;
+  --bg: #ffffff;
+  --muted: #6b7280;
+  --text: #111827;
+  --subtle: #f7f8fb;
+  --shadow: 0 8px 24px rgba(17, 24, 39, 0.08);
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+body {
+  font-size: 16px;
+}
+input,
+select,
+textarea,
+button {
+  font-size: 16px;
+}
+
+.issue-summary,
+.issue-desc,
+.issue-history,
+.worklog-history {
+  margin-top: 16px;
+}
+
+/* ===== Page title ===== */
+.x-page-title {
+  margin: 14px 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.x-page-title .page-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.2px;
+}
+
+.x-page-title .page-title-sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ===== Summary ===== */
+.issue-summary {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.issue-summary-head {
+  padding: 14px 16px;
+  background: var(--subtle);
+  border-bottom: 1px solid var(--border);
+}
+
+.issue-summary-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.2px;
+
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+
+  min-width: 0; /* flex ellipsis 안정화 */
+}
+
+.issue-summary-title .project {
+  color: var(--muted);
+  font-weight: 800;
+  flex: 0 1 auto;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.issue-summary-title .sep {
+  color: var(--muted);
+  flex: 0 0 auto;
+}
+
+.issue-summary-title .issue {
+  color: var(--text);
+  font-weight: 900;
+  flex: 1 1 auto;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  min-width: 0;
+}
+
+.issue-summary-title .issue > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .issue-summary-title {
+    font-size: 16px;
+  }
+}
+
+/* ===== Meta table ===== */
+.issue-meta {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.issue-meta tbody tr + tr {
+  border-top: 1px solid var(--border);
+}
+
+.issue-meta th,
+.issue-meta td {
+  padding: 14px 16px;
+  vertical-align: middle;
+  font-size: 16px;
+}
+
+.issue-meta th {
+  white-space: nowrap;
+  background: var(--subtle);
+  color: var(--muted);
+  font-weight: 700;
+  border-right: 1px solid var(--border);
+}
+
+.issue-meta th:nth-child(1),
+.issue-meta th:nth-child(3) {
+  width: 110px;
+}
+
+.issue-meta td:nth-child(2),
+.issue-meta td:nth-child(4) {
+  width: calc((100% - 220px) / 2);
+}
+
+.issue-meta td {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.issue-meta td span {
+  font-weight: 700;
+}
+
+/* ===== File row (2열: 첨부파일 / 파일 등록일) ===== */
+.issue-meta td a {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.issue-meta td.file-date {
+  white-space: nowrap;
+}
+
+/* ===== Section title ===== */
+.section-title {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+/* ===== Description ===== */
+.issue-desc {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.desc-box {
+  margin: 0;
+  padding: 14px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 120px;
+}
+
+/* ===== History ===== */
+.issue-history {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.history-box {
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  background: var(--subtle);
+  padding: 18px;
+  min-height: 140px;
+  font-size: 16px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.history-box .empty {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ===== Full width ===== */
+.x-page-title,
+.issue-summary,
+.issue-desc,
+.issue-history {
+  max-width: none;
+  width: 100%;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 860px) {
+  .issue-meta,
+  .issue-meta tbody,
+  .issue-meta tr,
+  .issue-meta th,
+  .issue-meta td {
+    display: block;
+    width: 100%;
+  }
+
+  .issue-meta tbody tr {
+    border-top: 0;
+    padding: 10px 0;
+  }
+
+  .issue-meta tbody tr + tr {
+    border-top: 1px solid var(--border);
+  }
+
+  .issue-meta th {
+    border-right: 0;
+    padding: 12px 16px 6px;
+    background: transparent;
+    width: 100% !important;
+  }
+
+  .issue-meta td {
+    padding: 0 16px 12px;
+    width: 100% !important;
+  }
+
+  .issue-meta td a {
+    max-width: 100%;
+  }
+}
+
+.history-item {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.history-head .head-line {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.change-list {
+  font-size: 13px;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding-left: 0;
+}
+
+/* ===== bottom area layout (history + worklogs) ===== */
+.issue-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 992px) {
+  .issue-bottom-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+/* ===== worklog panel ===== */
+.worklog-history .section-title {
+  font-weight: 800;
+}
+.worklog-history {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.worklog-box {
+  margin-top: 10px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  background: var(--subtle);
+  padding: 18px;
+  min-height: 140px;
+  font-size: 16px;
+}
+
+.worklog-item {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  border-radius: 0;
+  border: 0;
+}
+
+.worklog-item:last-child {
+  border-bottom: 0;
+}
+
+.worklog-item + .worklog-item {
+  margin-top: 0;
+}
+
+.worklog-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.wl-sep {
+  margin: 0 6px;
+  color: #9ca3af;
+}
+
+.wl-desc {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  font-size: 12px;
+  color: #6b7280;
+  background: transparent;
+  line-height: 1.4;
+  vertical-align: middle;
+}
+
+.worklog-min {
+  font-weight: 800;
+}
+
+#rejectHistoryModal .modal-body {
+  max-height: 60vh;
+  overflow: auto;
+}
+
+#rejectHistoryModal thead th {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+/* ===== Overdue (마감) ===== */
+.due-over {
+  color: #cf2222 !important;
+  font-weight: 800;
+}
+
+.due-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #b91c1c;
+  background-color: #fee2e2;
+  border-radius: 9999px;
+  border: 1px solid #fecaca;
+
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.history-date {
+  margin: 14px 0 8px;
+  padding: 8px 12px;
+  font-weight: 800;
+  border: 1px solid var(--border);
+  background: var(--subtle);
+  border-radius: 12px;
+}
+
+/* ===== 소요시간(Worklog) : 작업이력 스타일로 통일 ===== */
+
+/* worklog-box는 history-box와 동일한 톤 유지 */
+.worklog-box {
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  background: var(--subtle);
+  padding: 18px;
+  min-height: 140px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* 날짜 헤더는 history-date 그대로 사용 (추가 클래스만 옵션) */
+.worklog-date {
+  /* history-date와 똑같이 가되, 여백만 살짝 조정하고 싶으면 여기만 */
+  margin: 14px 0 8px;
+}
+
+/* 항목은 history-item 룩으로 통일 */
+.worklog-item {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.worklog-item:last-child {
+  border-bottom: 0;
+}
+
+/* 헤더(한 줄) : [작업자] 내용  |  시간 */
+.worklog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* 왼쪽 텍스트 말줄임 */
+.worklog-head .head-line {
+  font-weight: 700;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* 오른쪽 시간 고정 */
+.worklog-min {
+  font-weight: 800;
+  color: var(--text);
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+/* required star */
+.form-label .req {
+  color: #ef4444;
+  font-weight: 900;
+  margin-left: 4px;
+  line-height: 1;
+}
+
+#workerModalTree,
+#workerModalTree.type-tree,
+.type-tree {
+  padding: 0;
+  border: none !important;
+  background-color: #ffffff;
+}
+
+#workerModalTree ul,
+.type-tree ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* (선택) 지금 JS는 프로젝트 그룹이 없고 단순 리스트만 그리니까
+   아래 그룹 관련은 "나중에 트리형으로 바뀔 때" 대비용이야 */
+.type-project-group {
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background-color: #f8f9fa;
+  box-shadow: none;
+}
+
+.type-project-header {
+  background-color: rgb(224, 229, 243);
+  color: #111827;
+  padding: 10px 14px;
+  font-weight: 800;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  transition: background-color 0.15s ease;
+}
+
+.type-project-header:hover {
+  background-color: #dee2e6;
+}
+
+.type-project-header::before {
+  content: "▶";
+  font-size: 12px;
+}
+
+.type-project-header.active::before {
+  content: "▼";
+}
+
+.type-project-header.active {
+  filter: brightness(0.98);
+}
+
+/* ===== 여기부터가 지금 당장 적용되는 핵심 (type-item) ===== */
+#workerModalTree .type-item,
+.type-tree .type-item {
+  cursor: pointer;
+  padding: 10px 14px;
+  display: block;
+  font-size: 14px;
+  color: #111827;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eeeeee;
+  transition: background-color 0.15s ease;
+  text-decoration: none;
+}
+
+#workerModalTree .type-item:hover,
+.type-tree .type-item:hover {
+  background-color: #e2e6ea;
+}
+
+#workerModalTree li:last-child > .type-item,
+.type-tree li:last-child > .type-item {
+  border-bottom: none;
+}
+
+/* depth 들여쓰기 (트리 구조일 때) */
+#workerModalTree ul ul .type-item,
+.type-tree ul ul .type-item {
+  padding-left: 28px;
+}
+
+#workerModalTree ul ul ul .type-item,
+.type-tree ul ul ul .type-item {
+  padding-left: 50px;
+}
+
+#workerModalTree ul ul ul ul .type-item,
+.type-tree ul ul ul ul .type-item {
+  padding-left: 72px;
+}
+
+/* 비어있음 메시지 */
+#workerModalTree .text-muted {
+  padding: 14px;
+}

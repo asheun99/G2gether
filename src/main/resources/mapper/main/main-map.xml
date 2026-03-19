@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yedam.app.main.mapper.MainMapper">
+	<!-- 유저가 속한 프로젝트 상태 정보 가져오기 -->
+	<select id="selectCodeNameCnt" resultType="MainProjectStatusVO">
+		select code_name
+			   ,count(*) AS codeNameCnt
+		from vw_user_auth
+		
+		where user_code = #{userCode}
+		and code_name != '삭제'
+		
+		group by code_name
+	</select>
+
+	<!-- 유저의 프로젝트별 일감 현황 -->
+	<select id="selectProIssSta" resultType="ProIssStaVO">
+		SELECT
+			/* 프로젝트 전체 이슈 */
+			p.project_code AS projectCode,
+			p.project_name AS projectName,
+			NVL(SUM(CASE WHEN s.code_id = 'OB1' THEN 1 ELSE 0 END), 0) AS newIss,
+			NVL(SUM(CASE WHEN s.code_id = 'OB2' THEN 1 ELSE 0 END), 0) AS progress,
+			NVL(SUM(CASE WHEN s.code_id = 'OB3' THEN 1 ELSE 0 END), 0) AS solution,
+			NVL(SUM(CASE WHEN s.code_id = 'OB4' THEN 1 ELSE 0 END), 0) AS returnIss,
+			NVL(SUM(CASE WHEN s.code_id = 'OB5' THEN 1 ELSE 0 END), 0) AS completion,
+			
+			/* 내 이슈(담당자 = 나) */
+			NVL(SUM(CASE WHEN s.code_id = 'OB1' AND i.assignee_code = #{userCode} THEN 1 ELSE 0 END), 0) AS myNewIss,
+      		NVL(SUM(CASE WHEN s.code_id = 'OB2' AND i.assignee_code = #{userCode} THEN 1 ELSE 0 END), 0) AS myProgress,
+      		NVL(SUM(CASE WHEN s.code_id = 'OB3' AND i.assignee_code = #{userCode} THEN 1 ELSE 0 END), 0) AS mySolution,
+      		NVL(SUM(CASE WHEN s.code_id = 'OB4' AND i.assignee_code = #{userCode} THEN 1 ELSE 0 END), 0) AS myReturnIss,
+      		NVL(SUM(CASE WHEN s.code_id = 'OB5' AND i.assignee_code = #{userCode} THEN 1 ELSE 0 END), 0) AS myCompletion
+		FROM projects p
+		
+		JOIN (
+			SELECT pru.project_code
+			FROM project_role_user pru
+		
+			WHERE pru.user_code = #{userCode}
+
+			UNION
+
+			SELECT gpr.project_code
+			FROM "GROUP_MEMBER" gm
+		
+			JOIN "GR_PRO_ROLE" gpr
+			ON gpr.gr_code = gm.gr_code
+		
+			WHERE gm.user_code = #{userCode}
+		) up
+		ON up.project_code = p.project_code
+
+		LEFT JOIN issues i
+		ON i.project_code = p.project_code
+
+		LEFT JOIN status s
+		ON s.status_code = i.status_code
+
+		WHERE
+		p.status = 'OD1'
+
+		GROUP BY p.project_code, p.project_name
+		ORDER BY
+		p.project_code
+	</select>
+
+	<!-- 본인이 관리자인 프로젝트 -->
+	<select id="selectAdminProByUserCode" resultType="Integer">
+		SELECT DISTINCT
+		project_code
+		FROM (
+		-- 1) 직접 매핑으로 admin
+		SELECT pru.project_code
+		FROM project_role_user pru
+
+		JOIN role r
+		ON r.role_code = pru.role_code
+
+		WHERE pru.user_code = #{userCode}
+		AND r.admin_ck = 'Y'
+
+		UNION
+
+		-- 2) 그룹 매핑으로 admin
+		SELECT gpr.project_code
+		FROM "GROUP_MEMBER" gm
+
+		JOIN "GR_PRO_ROLE" gpr
+		ON gpr.gr_code = gm.gr_code
+
+		JOIN role r
+		ON r.role_code = gpr.role_code
+
+		WHERE gm.user_code = #{userCode}
+		AND r.admin_ck = 'Y'
+		)
+	</select>
+
+	<!-- 프로젝트 관리자 여부 확인 -->
+	<select id="selectIsAdminInProject" resultType="Integer">
+		SELECT COUNT(*)
+		FROM (
+			-- 1) 직접 매핑 admin
+			SELECT 1
+			FROM project_role_user pru
+			
+			JOIN role r
+			ON r.role_code = pru.role_code
+			
+			WHERE pru.user_code = #{userCode}
+			AND pru.project_code = #{projectCode}
+			AND r.admin_ck = 'Y'
+
+			UNION ALL
+
+			-- 2) 그룹 매핑 admin
+			SELECT 1
+			FROM "GROUP_MEMBER" gm
+			
+			JOIN "GR_PRO_ROLE" gpr
+			ON gpr.gr_code = gm.gr_code
+			
+			JOIN role r
+			ON r.role_code = gpr.role_code
+			
+			WHERE gm.user_code = #{userCode}
+			AND gpr.project_code = #{projectCode}
+			AND r.admin_ck = 'Y'
+		)
+	</select>
+
+	<!-- 프로젝트 내부 담당자별 일감 현황 -->
+	<select id="selectAssIssSta" resultType="AssigneeIssStaVO">
+		SELECT u.user_code AS
+		userCode,
+		u.name AS userName,
+		SUM(CASE WHEN s.code_id = 'OB1' THEN 1
+		ELSE 0 END) AS newIss,
+		SUM(CASE WHEN s.code_id = 'OB2' THEN 1 ELSE 0
+		END) AS progress,
+		SUM(CASE WHEN s.code_id = 'OB3' THEN 1 ELSE 0 END) AS
+		solution,
+		SUM(CASE WHEN s.code_id = 'OB4' THEN 1 ELSE 0 END) AS
+		returnIss,
+		SUM(CASE WHEN s.code_id = 'OB5' THEN 1 ELSE 0 END) AS
+		completion,
+    	NVL(ROUND(AVG(NVL(i.progress, 0))), 0) AS progressRate
+		
+		FROM issues i
+
+		JOIN status s
+		ON s.status_code = i.status_code
+
+		JOIN users u
+		ON u.user_code = i.assignee_code
+
+		WHERE i.project_code =
+		#{projectCode}
+
+		GROUP BY u.user_code, u.name
+		ORDER BY u.name
+	</select>
+
+	<!-- 프로젝트 내부 본인 일감현황 -->
+	<select id="selectMyAssIssSta" resultType="AssigneeIssStaVO">
+		SELECT u.user_code AS
+		userCode,
+		u.name AS userName,
+		SUM(CASE WHEN s.code_id = 'OB1' THEN 1
+		ELSE 0 END) AS newIss,
+		SUM(CASE WHEN s.code_id = 'OB2' THEN 1 ELSE 0
+		END) AS progress,
+		SUM(CASE WHEN s.code_id = 'OB3' THEN 1 ELSE 0 END) AS
+		solution,
+		SUM(CASE WHEN s.code_id = 'OB4' THEN 1 ELSE 0 END) AS
+		returnIss,
+		SUM(CASE WHEN s.code_id = 'OB5' THEN 1 ELSE 0 END) AS
+		completion,
+		NVL(ROUND(AVG(NVL(i.progress, 0))), 0) AS progressRate
+		
+		FROM issues i
+		JOIN status s ON s.status_code = i.status_code
+		JOIN users u ON u.user_code = i.assignee_code
+
+		WHERE i.project_code =
+		#{projectCode}
+		AND i.assignee_code = #{userCode}
+
+		GROUP BY u.user_code,
+		u.name
+	</select>
+	
+	<!-- 내가 속한 진행중 프로젝트들의 전체 현재 진척도(가중 평균) -->
+	<select id="selectTodayProgressRate" resultType="Integer">
+	<![CDATA[
+		WITH my_projects AS (
+  			SELECT /*+ MATERIALIZE */ pru.project_code
+  			FROM project_role_user pru
+  			WHERE pru.user_code = #{userCode}
+  			UNION
+  			SELECT /*+ MATERIALIZE */ gpr.project_code
+  			FROM "GROUP_MEMBER" gm
+  			JOIN "GR_PRO_ROLE" gpr ON gpr.gr_code = gm.gr_code
+  			WHERE gm.user_code = #{userCode}
+		)
+		SELECT NVL(
+         	ROUND(SUM(v.plan * v.actual_prog) / NULLIF(SUM(v.plan), 0), 0),
+         	0
+       		) AS total_actual_prog
+		FROM my_projects mp
+		JOIN projects p ON p.project_code = mp.project_code AND p.status = 'OD1'
+		JOIN VW_PROJECT_PROGRESS v ON v.project_code = mp.project_code
+	]]>
+	</select>
+	
+	<!-- 본인 이슈 Top 5 -->
+	<select id="selectMyTopIssues" resultType="MyTopIssueVO">
+	<![CDATA[
+  		SELECT *
+  		FROM (
+    		SELECT
+      			i.issue_code AS issueCode,
+      			i.title      AS title,
+      			cp.code_name AS priorityName,
+        			cs.code_name AS statusName,
+      			i.due_at     AS dueAt,
+      			NVL(i.updated_at, i.created_at) AS updatedAt,
+      			i.progress   AS progress
+    		FROM issues i
+    		
+    		JOIN status s
+      		ON s.status_code = i.status_code
+      		
+      	LEFT JOIN common_code cp
+      	ON cp.code_id = i.priority
+      	
+      	LEFT JOIN common_code cs
+      	ON cs.code_id = s.code_id
+      		
+    		WHERE i.project_code  = #{projectCode}
+      		AND i.assignee_code = #{userCode}
+      		AND s.code_id != 'OB5'
+      		
+    		ORDER BY
+      			/* 마감일 빠른 순(없으면 뒤로) */
+      			i.due_at NULLS LAST,
+      			/* 최근 업데이트 순 */
+      			NVL(i.updated_at, i.created_at) DESC
+  		)
+  		WHERE ROWNUM <= 5
+  	]]>
+	</select>
+	
+	<!-- ======================= 메인 최근공지(내페이지와 동일) ======================= -->
+	<select id="selectRecentNoticesForMain" resultType="MyNoticeDTO">
+  		SELECT *
+  		FROM (
+    		SELECT
+      			n.notice_code AS noticeCode,
+      			n.project_code AS projectCode,
+      			p.project_name AS projectName,
+      			n.title AS title,
+      			n.created_at AS createdAt
+    		FROM projects p
+    		JOIN (
+      			SELECT pru.project_code
+      			FROM project_role_user pru
+      			WHERE pru.user_code = #{userCode}
+
+      			UNION
+
+      			SELECT gpr.project_code
+      			FROM "GROUP_MEMBER" gm
+      			JOIN "GR_PRO_ROLE" gpr
+        		ON gpr.gr_code = gm.gr_code
+      			WHERE gm.user_code = #{userCode}
+    		) up ON up.project_code = p.project_code
+
+    		JOIN notices n
+      		ON n.project_code = p.project_code
+
+    		WHERE p.status = 'OD1'
+    		ORDER BY n.created_at DESC
+  		)
+  		WHERE ROWNUM <![CDATA[ <= ]]> #{limit}
+	</select>
+	
+	<select id="selectPickedIssues" resultType="PickedIssueDTO">
+  		<![CDATA[
+  		SELECT *
+  		FROM (
+    		SELECT
+      			i.issue_code AS issueCode,
+      			i.title AS title,
+      			cs.code_name AS statusName,
+      			cp.code_name AS priorityName,
+      			i.due_at AS dueAt
+    		FROM issues i
+    		JOIN status s ON s.status_code = i.status_code
+    		LEFT JOIN common_code cs ON cs.code_id = s.code_id
+    		LEFT JOIN common_code cp ON cp.code_id = i.priority
+    		WHERE i.project_code = #{projectCode}
+
+      		-- ✅ 관리자인 경우: 클릭한 assigneeCode로 필터(비어있으면 전체)
+      		-- ✅ 비관리자인 경우: 무조건 자기(userCode)만 보이게 강제
+      		AND (
+        		(#{isAdmin} = 'Y' AND (#{assigneeCode} IS NULL OR i.assignee_code = #{assigneeCode}))
+        	OR
+        		(#{isAdmin} != 'Y' AND i.assignee_code = #{userCode})
+      		)
+
+      		-- 상태 필터(비어있으면 전체)
+      		AND (#{statusId} IS NULL OR #{statusId} = '' OR s.code_id = #{statusId})
+
+    		ORDER BY
+      			i.due_at NULLS LAST,
+      			NVL(i.updated_at, i.created_at) DESC
+  		)
+  		WHERE ROWNUM <= #{limit}
+  		]]>
+	</select>
+	
+	<!-- 프로젝트명 조회 -->
+	<select id="selectProjectName" resultType="String">
+  		SELECT p.project_name
+  		FROM projects p
+  		WHERE p.project_code = #{projectCode}
+	</select>
+	
+	<!-- ======================= MAIN 메모 달력 ======================= -->
+
+	<select id="selectMemosByMonth" resultType="MainMemoDTO">
+  	<![CDATA[
+  		SELECT
+    		memo_code AS memoCode,
+    		user_code AS userCode,
+    		TO_CHAR(memo_date, 'YYYY-MM-DD') AS memoDate,
+    		content   AS content
+  		FROM user_memo
+  		WHERE user_code = #{userCode}
+    	AND memo_date >= TRUNC(TO_DATE(#{fromDate}, 'YYYY-MM-DD'))
+    	AND memo_date <  TRUNC(TO_DATE(#{toDate},   'YYYY-MM-DD'))
+    	
+  		ORDER BY memo_date ASC
+  	]]>
+	</select>
+	
+	<!-- ======================= MAIN 공휴일 달력 ======================= -->
+	<select id="selectHolidaysByMonth" resultType="MainHolidayDTO">
+	<![CDATA[
+  	SELECT
+    	TO_CHAR(TRUNC(h.dt), 'YYYY-MM-DD') AS holiDate,
+    	h.holi_nm AS holiName
+  	FROM holiday h
+  	WHERE h.use_yn = 'Y'
+    AND h.dt >= TRUNC(TO_DATE(#{fromDate}, 'YYYY-MM-DD'))
+    AND h.dt <  TRUNC(TO_DATE(#{toDate},   'YYYY-MM-DD'))
+    
+  	ORDER BY h.dt ASC
+	]]>
+	</select>
+
+	<select id="selectMemoByDate" resultType="MainMemoDTO">
+  	<![CDATA[
+  		SELECT
+    		memo_code AS memoCode,
+    		user_code AS userCode,
+    		TO_CHAR(memo_date, 'YYYY-MM-DD') AS memoDate,
+    		content   AS content
+  		FROM user_memo
+  		WHERE user_code = #{userCode}
+    	AND memo_date = TRUNC(TO_DATE(#{memoDate}, 'YYYY-MM-DD'))
+  	]]>
+	</select>
+
+	<insert id="upsertMemo">
+  	<![CDATA[
+  		MERGE INTO user_memo t
+  		USING (
+    		SELECT
+      			#{userCode} AS user_code,
+      			TRUNC(TO_DATE(#{memoDate}, 'YYYY-MM-DD')) AS memo_date,
+      			#{content} AS content
+    		FROM dual
+  		) s
+  		ON (t.user_code = s.user_code AND t.memo_date = s.memo_date)
+
+  		WHEN MATCHED THEN
+    	UPDATE SET
+      	t.content = s.content
+
+  		WHEN NOT MATCHED THEN
+    	INSERT (memo_code, user_code, memo_date, content)
+    	VALUES (
+      		(SELECT NVL(MAX(memo_code), 0) + 1 FROM user_memo),
+      		s.user_code,
+      		s.memo_date,
+      		s.content
+    	)
+  	]]>
+	</insert>
+
+	<delete id="deleteMemo">
+  	<![CDATA[
+  		DELETE FROM user_memo
+  		WHERE user_code = #{userCode}
+    	AND memo_date = TRUNC(TO_DATE(#{memoDate}, 'YYYY-MM-DD'))
+  	]]>
+	</delete>
+	
+	<!-- 전체 진행률: 권한 프로젝트만 대상으로 가중 평균 -->
+	<select id="selectTodayProgressRateByProjects" resultType="Integer">
+<![CDATA[
+  SELECT NVL(
+           ROUND(SUM(v.plan * v.actual_prog) / NULLIF(SUM(v.plan), 0), 0),
+           0
+         ) AS total_actual_prog
+  FROM VW_PROJECT_PROGRESS v
+  JOIN projects p
+    ON p.project_code = v.project_code
+   AND p.status = 'OD1'
+  WHERE v.project_code IN
+]]>
+    <foreach collection="projectCodes" item="pc" open="(" separator="," close=")">
+      #{pc}
+    </foreach>
+	</select>
+	
+	<!-- 도넛차트: readable 프로젝트만 대상으로,
+     admin 아닌 프로젝트는 OD1만, admin 프로젝트는 OD1/OD2 표시 -->
+<select id="selectCodeNameCntByProjects2" resultType="MainProjectStatusVO">
+  SELECT
+      cc.code_name AS codeName,
+      COUNT(*)     AS codeNameCnt
+  FROM projects p
+  JOIN common_code cc
+    ON cc.code_id = p.status
+  WHERE p.project_code IN
+    <foreach collection="readableProjectCodes" item="pc" open="(" separator="," close=")">
+      #{pc}
+    </foreach>
+
+    -- ✅ 삭제 제외(네 코드 기준)
+    AND p.status != 'OD2'
+
+    -- ✅ admin 아닌 프로젝트는 진행중만(OD1)
+    -- ✅ admin 프로젝트는 종료(OD2)도 포함
+    AND (
+          p.status = 'OD1'
+          <if test="adminProjectCodes != null and adminProjectCodes.size() > 0">
+            OR p.project_code IN
+              <foreach collection="adminProjectCodes" item="apc" open="(" separator="," close=")">
+                #{apc}
+              </foreach>
+          </if>
+        )
+
+  GROUP BY cc.code_name
+  ORDER BY cc.code_name
+</select>
+</mapper>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
+
+<head>
+<meta charset="UTF-8" />
+<title>일정 달력</title>
+<!-- FullCalendar -->
+<script
+	src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
+<link rel="stylesheet" th:href="@{/css/calendar/list.css}">
+<link rel="stylesheet" th:href="@{/css/gantt/search.css}" />
+</head>
+
+<body>
+	<div id="container" class="container-fluid">
+
+		<!-- 페이지 제목 -->
+		<div class="x-page-title">
+			<h3 class="page-title">일정 달력</h3>
+			<div class="page-title-sub">달력에서 일감 일정을 조회할 수 있습니다.</div>
+		</div>
+
+		<!-- 검색조건 -->
+		<div class="mb-3" th:replace="~{gantt/search :: searchCondition(view='calendar/list')}"></div>
+
+		<div id="calendarLoadingSpinner"
+			class="d-flex justify-content-center align-items-center"
+			style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.7); z-index: 1000; display: none;">
+			<div class="spinner-border text-primary" role="status"
+				style="width: 3rem; height: 3rem;">
+				<span class="visually-hidden">Loading...</span>
+			</div>
+		</div>
+
+		<!-- ===================== -->
+		<!-- 캘린더 카드 -->
+		<!-- ===================== -->
+		<div class="card border-0">
+
+			<!-- 카드 헤더 -->
+			<div class="card-body pb-2 px-0">
+
+				<!-- 범례 -->
+				<div id="calendarLegend"
+					class="d-flex flex-wrap gap-3 small text-secondary mb-3"></div>
+
+				<!-- 달력 -->
+				<div id="calendar"></div>
+
+			</div>
+		</div>
+
+	</div>
+
+	<script th:inline="javascript">
+    	window.currentProject = [[${session.currentProject}]];
+    	console.log(currentProject);
+	</script>
+	<script th:src="@{/js/calendar/list.js}"></script>
+	<script th:src="@{/js/gantt/search.js}"></script>
+</body>
+</html>

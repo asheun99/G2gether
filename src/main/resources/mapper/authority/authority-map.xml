@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yedam.app.authority.mapper.AuthorityMapper">
+<select id="selectAuthority" resultType="AuthorityVO">
+  SELECT
+    ra.category,
+    ra.rd_rol AS rdRol,
+    ra.wr_rol AS wrRol,
+    ra.mo_rol AS moRol,
+    ra.del_rol AS delRol
+  FROM project_role_user pru
+  JOIN role_authority ra
+    ON ra.role_code = pru.role_code
+  WHERE pru.project_code = #{projectCode}
+    AND pru.user_code = #{userCode}
+    AND ra.category = #{category}
+</select>
+
+<select id="selectProjectAuth" resultType="AuthorityVO">
+  SELECT
+    #{userCode} AS user_code,
+    #{projectCode} AS project_code,
+    CASE WHEN MAX(admin_ck) = 'Y' THEN 'Y' ELSE 'N' END AS admin_ck,
+    MAX(status) KEEP (DENSE_RANK LAST ORDER BY CASE WHEN admin_ck='Y' THEN 2 ELSE 1 END, status) AS status,
+    MAX(role_name) KEEP (DENSE_RANK LAST ORDER BY CASE WHEN admin_ck='Y' THEN 2 ELSE 1 END, status) AS role_name
+  FROM vw_user_auth
+  WHERE user_code = #{userCode}
+    AND project_code = #{projectCode}
+</select>
+
+<select id="existsAdminProject" resultType="int">
+  SELECT CASE WHEN EXISTS (
+    SELECT 1
+    FROM vw_user_auth
+    WHERE user_code = #{userCode}
+      AND admin_ck = 'Y'
+      AND status = 'OD1'
+  ) THEN 1 ELSE 0 END
+  FROM dual
+</select>
+
+
+<select id="existsIssueCreatorOrAssignee" resultType="int">
+  SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END AS cnt
+  FROM issues i
+  WHERE i.issue_code = #{issueCode}
+    AND (i.created_by_code = #{userCode} OR i.assignee_code = #{userCode})
+</select>
+
+<select id="existsWorklogIssueAssignee" resultType="int">
+  SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END AS cnt
+  FROM work_logs wl
+  JOIN issues i
+    ON i.issue_code = wl.issue_code
+  WHERE wl.work_log_code = #{workLogCode}
+    AND i.assignee_code = #{userCode}
+</select>
+</mapper>

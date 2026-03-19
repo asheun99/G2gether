@@ -1,0 +1,474 @@
+/* =========================================================
+   Issue Insert - Common UI
+   ========================================================= */
+
+/* ----- page title ----- */
+.x-page-title {
+  margin: 14px 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.x-page-title .page-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.2px;
+}
+
+.x-page-title .page-title-sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ----- card ----- */
+.issue-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.issue-card .card-header {
+  background: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 12px 14px;
+}
+
+.issue-card .card-header-title {
+  font-weight: 800;
+  color: #111827;
+}
+
+.issue-card .card-body {
+  padding: 14px;
+}
+
+/* ----- form ----- */
+.form-label {
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.form-text,
+.priority-help,
+.field-help {
+  color: #6b7280;
+}
+
+.field-help {
+  min-height: 18px;
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.issue-textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.input-group .btn {
+  white-space: nowrap;
+}
+
+/* 버튼 톤 */
+.btn-dark {
+  background-color: #111827;
+  border-color: #111827;
+}
+.btn-dark:hover {
+  background-color: #0b1220;
+  border-color: #0b1220;
+}
+
+/* required star */
+.form-label .req {
+  color: #ef4444;
+  font-weight: 900;
+  margin-left: 4px;
+  line-height: 1;
+}
+
+/* =========================================================
+   Common Modal Tone (Type / Assignee / Parent Issue)
+   ========================================================= */
+#typeModalTree,
+#assigneeModalTree,
+#assigneeModalList,
+#parIssueModalTree {
+  padding: 0;
+  border: none !important;
+  background-color: #ffffff;
+}
+
+/* ul 점 제거 */
+#typeModalTree ul,
+#assigneeModalTree ul,
+#parIssueModalTree ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* =========================================================
+   Tree Group Base (공통 카드/헤더/컨텐츠)
+   - Type Tree / Parent Issue Tree 공통 사용
+   ========================================================= */
+.type-project-group {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background-color: #f9fafb;
+}
+
+.type-project-header {
+  background-color: rgb(224, 229, 243);
+  color: #111827;
+  padding: 10px 14px;
+  font-weight: 800;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.type-project-header:hover {
+  background-color: #dee2e6;
+}
+
+/* 기본: 접힘/펼침 아이콘 */
+.type-project-header::before {
+  content: "▶";
+  font-size: 12px;
+}
+.type-project-header.active::before {
+  content: "▼";
+}
+.type-project-header.active {
+  filter: brightness(0.98);
+}
+
+.type-project-content {
+  background-color: #ffffff;
+}
+
+/* 공통 아이템(행) */
+.type-item {
+  cursor: pointer;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #111827;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eeeeee;
+  transition: background-color 0.15s ease;
+  text-decoration: none;
+}
+
+.type-item:hover {
+  background-color: #f3f4f6;
+}
+
+/* 마지막 border 제거 */
+.type-project-group li:last-child > .type-item {
+  border-bottom: none;
+}
+.type-project-group li:last-child > ul li:last-child > .type-item {
+  border-bottom: none;
+}
+
+/* 결과 없음 */
+#typeModalTree .text-muted,
+#assigneeModalTree .text-muted,
+#assigneeModalList .text-muted,
+#parIssueModalTree .text-muted {
+  padding: 14px;
+}
+
+/* =========================================================
+   Project Select Modal - List (낱개 카드)
+   ========================================================= */
+#projectSelectModal #projectModalList {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+#projectSelectModal #projectModalList.list-group {
+  border: 0;
+}
+
+#projectSelectModal #projectModalList .list-group-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: rgb(224, 229, 243);
+  color: #111827;
+  font-weight: 800;
+  font-size: 14px;
+
+  padding: 10px 14px;
+  margin-bottom: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+#projectSelectModal #projectModalList .list-group-item:last-child {
+  margin-bottom: 0;
+}
+
+#projectSelectModal #projectModalList .list-group-item:hover {
+  background: #dee2e6;
+  box-shadow: 0 4px 14px rgba(17, 24, 39, 0.08);
+}
+
+#projectSelectModal #projectModalList .list-group-item:focus,
+#projectSelectModal #projectModalList .list-group-item:active,
+#projectSelectModal #projectModalList .list-group-item.active {
+  outline: none;
+  box-shadow: 0 4px 14px rgba(17, 24, 39, 0.1);
+  background: #d5dbe3;
+  color: #111827;
+}
+
+#projectSelectModal #projectModalList .list-group-item a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =========================================================
+   Assignee Modal - List (JS가 .assignee-* 로 렌더할 때)
+   ========================================================= */
+.assignee-project-group {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background-color: #f9fafb;
+}
+
+.assignee-project-header {
+  background-color: rgb(224, 229, 243);
+  color: #111827;
+  padding: 10px 14px;
+  font-weight: 800;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.assignee-project-content {
+  background-color: #ffffff;
+}
+
+.assignee-item {
+  cursor: pointer;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #111827;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eeeeee;
+  transition: background-color 0.15s ease;
+}
+
+.assignee-item:hover {
+  background-color: #f3f4f6;
+}
+
+.assignee-project-content .assignee-item:last-child {
+  border-bottom: none;
+}
+
+/* =========================================================
+   Type Modal - Tree (등록 화면)
+   - indent + arrow + title 정렬 통일
+   ========================================================= */
+#typeModalTree .ti-tree-root {
+  padding: 0;
+  margin: 0;
+}
+
+#typeModalTree .type-item.ti-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* indent 스페이서: JS가 width를 넣어줌 */
+#typeModalTree .ti-indent {
+  flex: 0 0 auto;
+  display: inline-block;
+}
+
+/* arrow 칸 고정 */
+#typeModalTree .ti-arrow {
+  width: 16px;
+  flex: 0 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+/* 부모 화살표(접힘/펼침) */
+#typeModalTree .ti-arrow.is-parent::before {
+  content: "▶";
+  font-size: 12px;
+}
+#typeModalTree .ti-parent-item.is-open .ti-arrow.is-parent::before {
+  content: "▼";
+  font-size: 12px;
+}
+
+/* 리프도 공간 유지 */
+#typeModalTree .ti-arrow:not(.is-parent)::before {
+  content: "";
+}
+
+/* 텍스트 말줄임 */
+#typeModalTree .ti-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 부모 row 강조 */
+#typeModalTree .ti-parent-item {
+  font-weight: 800;
+}
+
+/* =========================================================
+   Parent Issue Modal - Tree (상위일감)
+   - Type Modal 톤으로 통일 + 3칸 레이아웃 유지
+   ========================================================= */
+
+/* 상위일감 헤더는 "유형명" 표시용이고 펼침 고정 -> ▼만 */
+#parIssueModalTree .type-project-header {
+  cursor: default;
+}
+#parIssueModalTree .type-project-header::before {
+  content: "▼";
+  font-size: 12px;
+}
+
+/* 행 레이아웃: arrow + title + meta */
+#parIssueModalTree .type-item.pi-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+/* arrow 칸(leaf도 공간 차지) */
+#parIssueModalTree .pi-arrow {
+  width: 16px;
+  flex: 0 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+/* 부모 화살표(접힘/펼침) */
+#parIssueModalTree .pi-arrow.is-parent::before {
+  content: "▶";
+  font-size: 12px;
+}
+#parIssueModalTree .pi-parent-item.is-open .pi-arrow.is-parent::before {
+  content: "▼";
+}
+
+/* 제목 */
+#parIssueModalTree .pi-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 담당자(우측 고정) */
+#parIssueModalTree .pi-meta {
+  margin-left: auto;
+  flex: 0 0 auto;
+  font-weight: 800;
+  color: #374151;
+  white-space: nowrap;
+}
+
+/* 부모 row 강조 */
+#parIssueModalTree .type-item.pi-item.pi-parent-item {
+  font-weight: 800;
+}
+
+#typeModalTree .ti-arrow.is-parent,
+#parIssueModalTree .pi-arrow.is-parent {
+  cursor: pointer;
+}
+
+#typeModalTree .ti-arrow.is-parent:hover,
+#parIssueModalTree .pi-arrow.is-parent:hover {
+  opacity: 1;
+}
+
+/* =========================================================
+   Modal content scroll area
+   검색창 아래 목록만 스크롤
+   ========================================================= */
+
+#projectModalList,
+#typeModalTree,
+#parIssueModalTree,
+#assigneeModalTree {
+  max-height: 420px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 스크롤 안쪽 여백 조금 */
+#projectModalList,
+#typeModalTree,
+#parIssueModalTree,
+#assigneeModalTree {
+  padding-right: 4px;
+}
+
+/* 필요하면 스크롤바도 조금 깔끔하게 */
+#projectModalList::-webkit-scrollbar,
+#typeModalTree::-webkit-scrollbar,
+#parIssueModalTree::-webkit-scrollbar,
+#assigneeModalTree::-webkit-scrollbar {
+  width: 8px;
+}
+
+#projectModalList::-webkit-scrollbar-thumb,
+#typeModalTree::-webkit-scrollbar-thumb,
+#parIssueModalTree::-webkit-scrollbar-thumb,
+#assigneeModalTree::-webkit-scrollbar-thumb {
+  background: #cfd6df;
+  border-radius: 999px;
+}
+
+#projectModalList::-webkit-scrollbar-track,
+#typeModalTree::-webkit-scrollbar-track,
+#parIssueModalTree::-webkit-scrollbar-track,
+#assigneeModalTree::-webkit-scrollbar-track {
+  background: transparent;
+}

@@ -1,0 +1,773 @@
+/* =========================================================
+   main - /static/css/main/main.css
+   ========================================================= */
+
+/* ===== Page Title ===== */
+.x-page-title {
+  margin: 14px 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.x-page-title .page-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.2px;
+}
+
+.x-page-title .page-title-sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ===== Main Grid ===== */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 14px;
+  align-items: stretch;
+  overflow-x: hidden;
+}
+
+@media (max-width: 992px) {
+  .main-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== Card (통일) ===== */
+.main-card {
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  overflow: hidden;
+
+  height: 360px;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  background-color: rgb(224, 229, 243);
+  color: #111827;
+  border-bottom: 1px solid #e5e7eb;
+
+  min-height: 52px;
+  padding: 12px 16px;
+}
+
+.main-card .card-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.card-header .btn-sm {
+	font-size: 0.6rem !important;
+}
+
+.main-card .card-body.p-0 {
+  padding: 0 !important;
+}
+
+/* ===== Chart ===== */
+.chart-wrap {
+  height: 100%;
+  width: 100%;
+  padding: 8px 10px 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.chart-box {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#donutchart,
+#donutchart > div,
+#donutchart svg {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* ===== Table Wrap (일감현황 톤 공통) ===== */
+.main-table-wrap {
+  height: 100%;
+  overflow: auto;
+}
+
+/* ===== Project Issue Table ===== */
+#mainIssueTable {
+  width: 100%;
+  table-layout: fixed;
+  white-space: nowrap;
+  margin: 0;
+}
+
+#mainIssueTable th:first-child,
+#mainIssueTable td:first-child{
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  white-space: nowrap;
+}
+
+#mainIssueTable td:nth-child(2){
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#mainIssueTable thead th {
+  font-size: 14px;
+  font-weight: 800;
+  vertical-align: middle;
+  color: #111827;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+#mainIssueTable tbody td {
+  font-size: 14px;
+  vertical-align: middle;
+  color: #111827;
+  border-color: #eeeeee;
+}
+
+#mainIssueTable.table-hover > tbody > tr:hover > * {
+  background-color: #ffffff;
+}
+
+#mainIssueTable.table-hover > tbody > tr.no-data-row:hover > * {
+  background-color: transparent !important;
+}
+
+#mainIssueTable tbody tr.no-data-row {
+  cursor: default !important;
+  pointer-events: none;
+}
+
+/* 클릭 가능한 행 */
+.click-row { cursor: pointer; }
+
+/* 프로젝트명 */
+.proj-name {
+  font-weight: 400;
+  color: #111827;
+}
+
+/* 관리자 배지 */
+.admin-badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid #c7d2fe;
+  background: #eef2ff;
+  color: #3730a3;
+  font-weight: 800;
+}
+
+/* 하단 안내 문구 */
+.main-hint {
+  padding: 10px 12px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 12px;
+  color: #6b7280;
+  background: #fafafa;
+}
+
+/* ===== Today Progress ===== */
+.today-rate-value {
+  font-size: 34px;
+  font-weight: 900;
+  text-align: center;
+  color: #111827;
+}
+
+.progress-lg {
+  height: 16px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.progress-lg .progress-bar {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #3b9ff6, #6366f1);
+  transition: width 0.4s ease;
+}
+
+/* =========================
+   MAIN 최근공지 - pager
+   ========================= */
+
+.block-inner{
+  height: 100%;
+  display:flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* spacer */
+.block-spacer{ flex: 0 0 8px; }
+
+/* pager */
+.block-pager{
+  flex: 0 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-top: 8px;
+  padding-bottom: 2px;
+}
+
+.block-pager .pager-pages{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  flex-wrap: wrap;
+}
+
+.pager-pages .pager-page{
+  padding: 3px 9px;
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 8px;
+}
+
+.pager-pages .pager-page.is-active{
+  background: #111827;
+  color: #fff;
+  border-color: #111827;
+}
+
+/* ===== Notice Table (일감현황 테이블 톤 맞춤) ===== */
+.notice-table-wrap{
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* 테이블 자체 */
+#mainNoticeTable{
+  width: 100%;
+  table-layout: fixed;
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* 헤더 톤(일감현황과 동일: 14px / 800 / border) */
+#mainNoticeTable thead th{
+  font-size: 14px;
+  font-weight: 800;
+  vertical-align: middle;
+  color: #111827;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* 바디 톤 */
+#mainNoticeTable tbody td{
+  font-size: 14px;
+  vertical-align: middle;
+  color: #111827;
+  border-color: #eeeeee;
+}
+
+/* hover 톤 */
+#mainNoticeTable.table-hover > tbody > tr:hover > *{
+  background-color: #ffffff;
+}
+
+/* 번호 */
+#mainNoticeTable td.notice-td-no{
+  width: 70px;
+  min-width: 70px;
+  max-width: 70px;
+  font-weight: 400; /* ✅ bold 제거 */
+  text-align: center;
+}
+
+/* 프로젝트 */
+#mainNoticeTable td.notice-td-proj{
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+  font-weight: 400;
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+/* 공지명(텍스트) */
+#mainNoticeTable .notice-td-title{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 400;
+  color: #111827;
+}
+
+/* 날짜 */
+#mainNoticeTable td.notice-td-date{
+  width: 56px;
+  min-width: 56px;
+  max-width: 56px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* 더미행 */
+#mainNoticeTable tr.pager-dummy-tr td{
+  height: 44px;
+  border-color: transparent !important;
+  background: transparent !important;
+  pointer-events: none;
+}
+
+/* ✅ 최근공지 행 높이 살짝 줄이기(테이블에만 적용) */
+#mainIssueTable tbody td,
+#mainNoticeTable tbody td{
+  padding-top: 10px;   /* 기존보다 살짝 줄임 */
+  padding-bottom: 10px;
+}
+
+/* =========================
+   진행률 카드는 반 높이
+   ========================= */
+.today-card{
+  height: 173px; /* 360의 대략 반 */
+}
+
+/* =========================
+   메모 달력 카드
+   ========================= */
+.memo-cal-card{
+  height: 173px;
+}
+
+.memo-cal-grid{
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.memo-cal-dow{
+  font-size: 11px;
+  font-weight: 800;
+  color: #6b7280;
+  text-align: center;
+  padding: 2px 0 6px;
+}
+
+.memo-cal-cell{
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 6px 6px 4px;
+  min-height: 38px;
+  cursor: pointer;
+  background: #fff;
+  position: relative;
+}
+
+.memo-cal-cell:hover{ background: #fafafa; }
+
+.memo-cal-cell.is-out{
+  opacity: .35;
+  cursor: default;
+}
+
+.memo-cal-day{
+  font-size: 12px;
+  font-weight: 900;
+  color: #111827;
+  line-height: 1;
+}
+
+.memo-cal-dot{
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #6366f1;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+}
+
+.memo-cal-cell.has-memo{
+  border-color: #c7d2fe;
+  background: #f8faff;
+}
+
+/* =========================
+   오른쪽 아래 1칸: 진행률 + 달력 좌우 반반 분할
+   ========================= */
+.main-split{
+  height: 360px;              /* 기존 main-card 높이와 동일 */
+  display: flex;
+  flex-direction: row;        /* ✅ column → row */
+  gap: 14px;
+  min-height: 0;
+}
+
+/* split 내부 카드: 높이 고정 풀고, 가로 반반 */
+.main-split .split-card{
+  height: 100% !important;    /* ✅ 세로는 wrapper 높이 꽉 */
+  flex: 1 1 0;                /* ✅ 가로 반반 */
+  min-width: 0;               /* ✅ 테이블/달력 overflow 방지 */
+  display: flex;              /* ✅ 카드 내부도 column 유지 */
+  flex-direction: column;
+}
+
+/* 카드 바디가 남은 높이 다 먹고 내부 스크롤/레이아웃 정상 */
+.main-split .split-card .card-body{
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* 달력은 카드 안에서 꽉 차게 */
+.memo-cal-wrap{
+  height: 100%;
+  padding: 10px 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* =========================
+   메모 삭제 확인 모달(심플)
+   ========================= */
+#memoDeleteConfirmModal .modal-content.memo-confirm-simple{
+  border-radius: 12px;
+}
+
+/* ✅ footer 윗줄 제거 */
+#memoDeleteConfirmModal .modal-footer{
+  border-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+
+#memoDeleteConfirmModal .modal-body{
+  padding-bottom: 16px !important;
+  padding-top: 25px !important;
+}
+
+/* 메모 달력 이전/다음: 꺽쇠 버튼 */
+.memo-nav-btn{
+  width: 32px;
+  height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+/* =========================================================
+   Skeleton UI (Main)
+   ========================================================= */
+.has-skeleton{
+  position: relative;
+}
+
+.skeleton-hide{
+  /* 로딩 중엔 숨김 처리 */
+}
+
+.has-skeleton .skeleton-overlay{
+  position: absolute;
+  inset: 0;
+  padding: 12px;
+  display: none;
+  background: #fff;
+  z-index: 5;
+}
+
+.has-skeleton.is-loading .skeleton-overlay{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.has-skeleton.is-loading .skeleton-hide{
+  visibility: hidden;
+}
+
+/* shimmer */
+@keyframes skShimmer{
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.sk{
+  border-radius: 10px;
+  background: linear-gradient(90deg, #eeeeee 25%, #f6f6f6 37%, #eeeeee 63%);
+  background-size: 800px 100%;
+  animation: skShimmer 1.2s ease-in-out infinite;
+}
+
+/* widths helpers */
+.w-60{ width: 60%; }
+.w-45{ width: 45%; }
+.w-40{ width: 40%; }
+
+/* common skeleton blocks */
+.sk-row{ height: 14px; border-radius: 8px; }
+
+/* donut placeholder */
+.sk-donut{
+  flex: 1 1 auto;
+  min-height: 220px;
+  border-radius: 16px;
+}
+
+/* calendar placeholder */
+.sk-cal{
+  flex: 1 1 auto;
+  min-height: 220px;
+  border-radius: 16px;
+}
+
+.sk-progress {
+  height: 16px;
+  border-radius: 999px;
+}
+
+/* =========================
+   Skeleton UI prettier blocks
+   ========================= */
+
+/* overlay 기본: 카드 안에서 가운데 정렬 + padding 통일 */
+.has-skeleton .skeleton-overlay{
+  position: absolute;
+  inset: 0;
+  padding: 14px 16px;
+  display: none;
+  background: #fff;
+  z-index: 5;
+}
+
+.has-skeleton.is-loading .skeleton-overlay{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.has-skeleton.is-loading .skeleton-hide{
+  visibility: hidden;
+}
+
+/* shimmer base */
+@keyframes skShimmer{
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.sk{
+  border-radius: 10px;
+  background: linear-gradient(90deg, #eeeeee 25%, #f6f6f6 37%, #eeeeee 63%);
+  background-size: 800px 100%;
+  animation: skShimmer 1.15s ease-in-out infinite;
+}
+
+/* helpers */
+.w-60{ width: 60%; }
+.w-55{ width: 55%; }
+.w-50{ width: 50%; }
+.w-45{ width: 45%; }
+.w-40{ width: 40%; }
+.w-35{ width: 35%; }
+
+/* title/desc lines */
+.sk-title{ height: 14px; border-radius: 8px; }
+.sk-desc{ height: 12px; border-radius: 8px; }
+
+/* =========================
+   Donut skeleton
+   ========================= */
+.sk-donut-overlay{
+  align-items: stretch;
+}
+
+.sk-donut-center{
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 210px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ring 느낌: 큰 둥근 사각(원) + 가운데 구멍 */
+.sk-ring{
+  width: 210px;
+  height: 210px;
+  border-radius: 999px;
+}
+
+.sk-ring-hole{
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 0 10px rgba(255,255,255,0.9) inset;
+}
+
+/* legend */
+.sk-legend{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 4px;
+}
+
+.sk-legend-item{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sk-dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.sk-line{
+  height: 12px;
+  border-radius: 8px;
+}
+
+/* =========================
+   Progress skeleton
+   ========================= */
+.sk-progress-overlay{
+  align-items: stretch;
+  justify-content: center;
+}
+
+.sk-percent{
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.sk-percent-num{
+  width: 120px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+.sk-percent-suffix{
+  width: 26px;
+  height: 24px;
+  border-radius: 10px;
+}
+
+.sk-progress-track{
+  height: 16px;
+  border-radius: 999px;
+  margin-top: 6px;
+}
+
+/* (선택) 도넛/진행률 overlay에서만 shimmer 강도 살짝 */
+.sk-donut-overlay .sk,
+.sk-progress-overlay .sk{
+  background: linear-gradient(90deg, #ececec 25%, #f7f7f7 37%, #ececec 63%);
+  background-size: 900px 100%;
+}
+
+/* =========================
+   Memo Calendar - Today / Weekend
+   ========================= */
+
+/* 기본 주말 톤 (글자만 살짝) */
+.memo-cal-cell.is-sun .memo-cal-day{
+  color: #dc2626; /* red-600 */
+}
+.memo-cal-cell.is-sat .memo-cal-day{
+  color: #2563eb; /* blue-600 */
+}
+
+/* 오늘 강조: 테두리/배경/살짝 그림자 */
+.memo-cal-cell.is-today{
+  border-color: #6366f1;          /* indigo-500 */
+  background: #eef2ff;            /* indigo-50 */
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.18) inset;
+}
+
+/* 오늘이면서 주말이면 너무 튀지 않게(선택) */
+.memo-cal-cell.is-today.is-out{
+  background: #f3f4f6;            /* out-month면 톤 다운 */
+  border-color: #d1d5db;
+  box-shadow: none;
+}
+
+/* out-month 주말은 더 옅게 */
+.memo-cal-cell.is-out.is-sun .memo-cal-day,
+.memo-cal-cell.is-out.is-sat .memo-cal-day{
+  color: #9ca3af;
+}
+
+.memo-cal-cell.is-today .memo-cal-dot{
+  transform: scale(1.15);
+}
+
+/* 공휴일: 날짜 글자 빨간색 */
+.memo-cal-cell.is-holiday .memo-cal-day{
+  color: #dc2626; /* red-600 */
+}
+
+/* out-month 공휴일은 너무 진하면 부담이면 톤 다운(선택) */
+.memo-cal-cell.is-out.is-holiday .memo-cal-day{
+  color: #fca5a5; /* red-300 */
+}
+
+/* =========================
+   Donut fixed legend
+   ========================= */
+.donut-legend-fixed{
+  display:flex;
+  justify-content:flex-start;
+  align-items:center;
+  gap:14px;
+  padding:10px 20px 0;  
+  font-size:13px;
+  color:#374151;
+}
+.donut-legend-fixed .lg-item{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  white-space:nowrap;
+}
+.donut-legend-fixed .lg-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  display:inline-block;
+}
+.donut-legend-fixed .lg-progress{ background:#3b9ff6; }
+.donut-legend-fixed .lg-done{ background:#9ca3af; }
+
+.donut-legend-fixed .lg-cnt{
+  font-weight: 400;
+  font-size: 13px;
+}

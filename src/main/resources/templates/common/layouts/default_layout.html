@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+<th:block th:replace="~{common/configs/default_configs :: BootStrap}"></th:block>
+<link rel="stylesheet" th:href="@{/css/common/header.css}" />
+<style type="text/css"></style>
+</head>
+<body class="sb-nav-fixed">
+	<!--/* 헤더 */-->
+	<header th:insert="~{common/fragments/default_header :: DefaultHeader}"></header>
+
+	<div id="layoutSidenav">
+		<!--/* 사이드바 */-->
+		<div id="layoutSidenav_nav">
+			<aside
+				th:replace="~{common/fragments/default_sidebar :: DefaultSideBar}"></aside>
+		</div>
+
+		<!--/* 메인 + 푸터 */-->
+		<div id="layoutSidenav_content">
+			<main style="margin: 0 20px 0 20px;">
+				<div class="container-fluid px-0" layout:fragment="Content"
+					th:inline="none"></div>
+			</main>
+
+			<!--/* 푸터 */-->
+			<footer class="py-4 bg-light mt-auto"
+				th:insert="~{common/fragments/default_footer :: DefaultFooter}"></footer>
+		</div>
+	</div>
+	<!-- 공통 Confirm 모달 -->
+	<div class="modal fade" id="confirmModal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-body text-center" id="confirmMessage"></div>
+				<div class="modal-footer justify-content-center border-0">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-primary" id="confirmOkBtn">확인</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<th:block
+		th:replace="~{common/configs/default_configs :: BottomScript}"></th:block>
+	<script th:src="@{/js/common/header.js}"></script>
+	<th:block layout:fragment="pageScript" th:inline="none"></th:block>
+</body>
+</html>

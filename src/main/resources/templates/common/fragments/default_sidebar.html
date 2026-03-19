@@ -1,0 +1,128 @@
+<nav th:fragment="DefaultSideBar"
+	class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+	<div class="sb-sidenav-menu">
+		<div class="nav" style="margin: 20px">
+			<a class="nav-link" th:href="@{/projects}">
+				<div class="sb-nav-link-icon">
+					<i class="fa-solid fa-diagram-project"></i>
+				</div> 프로젝트
+			</a> <a class="nav-link" th:href="@{/issueList}">
+				<div class="sb-nav-link-icon">
+					<i class="fa-solid fa-list-check"></i>
+				</div> 일감 목록
+			</a> <a class="nav-link" th:href="@{/kanbanboard}">
+				<div class="sb-nav-link-icon">
+					<i class="fa-solid fa-table-columns"></i>
+				</div> 나의 일정
+			</a> <a class="nav-link" th:href="@{/ganttChart}">
+				<div class="sb-nav-link-icon">
+					<i class="fa-solid fa-chart-gantt"></i>
+				</div> 일정 관리
+			</a> <a class="nav-link" th:href="@{/calendar}">
+				<div class="sb-nav-link-icon">
+					<i class="fa-solid fa-calendar-days"></i>
+				</div> 일정 달력
+			</a> <a class="nav-link" th:href="@{/noticeList}">
+				<div class="sb-nav-link-icon">
+					<i class="fa-solid fa-bullhorn"></i>
+				</div> 공지사항
+			</a> <a class="nav-link" th:href="@{/docs}">
+				<div class="sb-nav-link-icon">
+					<i class="fa-solid fa-folder-open"></i>
+				</div> 문서
+			</a> <a class="nav-link" th:href="@{/logs}">
+				<div class="sb-nav-link-icon">
+					<i class="fa-solid fa-clock"></i>
+				</div> 작업내역
+			</a> <a class="nav-link" th:href="@{/worklogs}">
+				<div class="sb-nav-link-icon">
+					<i class="fa-solid fa-clock"></i>
+				</div> 소요시간
+			</a> <a class="nav-link" th:href="@{/my}">
+				<div class="sb-nav-link-icon">
+					<i class="fa-solid fa-user"></i>
+				</div> 내 페이지
+			</a>
+			<!--  <a class="nav-link" th:href="@{/admin}"> th:if="${role == 'ADMIN'}
+				<div class="sb-nav-link-icon">
+					<i class="fa-solid fa-gear"></i>
+				</div> 관리
+			</a> -->
+
+			<!-- 아코디언 -->
+			<!-- 관리 탭: 하나라도 admin이 있으면 -->
+			<a class="nav-link collapsed" data-bs-toggle="collapse"
+				data-bs-target="#collapseSettings"
+				th:if="${session.user.sysCk == 'Y' or 
+            (session.userAuth != null and 
+             session.userAuth.?[
+                admin == 1 or
+                (rdRol == 'Y' and (
+                    category == '사용자' or 
+                    category == '그룹' or 
+                    category == '역할' or 
+                    category == '일감유형'
+                ))
+             ].size() > 0)}"><div
+					class="sb-nav-link-icon">
+					<i class="fa-solid fa-gear"></i>
+				</div> 관리
+				<div class="sb-sidenav-collapse-arrow">
+					<i class="fas fa-angle-down"></i>
+				</div> </a>
+
+
+			<div class="collapse" id="collapseSettings"
+				aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+				<nav class="sb-sidenav-menu-nested nav">
+
+					<!-- 프로젝트 관리: sysCk 또는 프로젝트 카테고리 admin -->
+					<a class="nav-link" th:href="@{/projectsmgr}"
+						th:if="${session.user.sysCk == 'Y' or 
+                    session.userAuth.?[category == '프로젝트' and admin == 1].size() > 0}">
+						<div class="sb-nav-link-icon">
+							<i class="fa-solid fa-diagram-project"></i>
+						</div> 프로젝트 관리
+					</a>
+
+					<!-- 사용자 관리: admin 또는 읽기 -->
+					<a class="nav-link" th:href="@{/usermgr}"
+						th:if="${session.user.sysCk == 'Y' or 
+                    session.userAuth.?[category == '사용자' and (admin == 1 or rdRol == 'Y')].size() > 0}">
+						<div class="sb-nav-link-icon">
+							<i class="fa-solid fa-user-plus"></i>
+						</div> 사용자 관리
+					</a>
+
+					<!-- 그룹 관리: admin 또는 읽기 -->
+					<a class="nav-link" th:href="@{/groupmgrs}"
+						th:if="${session.user.sysCk == 'Y' or 
+                    session.userAuth.?[category == '그룹' and (admin == 1 or rdRol == 'Y')].size() > 0}">
+						<div class="sb-nav-link-icon">
+							<i class="fas fa-users me-1"></i>
+						</div> 그룹 관리
+					</a>
+
+					<!-- 역할권한 관리: admin 또는 읽기 -->
+					<a class="nav-link" th:href="@{/auth}"
+						th:if="${session.user.sysCk == 'Y' or 
+                    session.userAuth.?[category == '역할' and (admin == 1 or rdRol == 'Y')].size() > 0}">
+						<div class="sb-nav-link-icon">
+							<i class="fas fa-check me-1"></i>
+						</div> 역할권한 관리
+					</a>
+
+					<!-- 일감 유형: admin 또는 읽기 -->
+					<a class="nav-link" th:href="@{/issuetype}"
+						th:if="${session.user.sysCk == 'Y' or 
+                    session.userAuth.?[category == '일감유형' and (admin == 1 or rdRol == 'Y')].size() > 0}">
+						<div class="sb-nav-link-icon">
+							<i class="fa-solid fa-clipboard-list"></i>
+						</div> 일감 유형
+					</a>
+
+				</nav>
+			</div>
+		</div>
+	</div>
+</nav>

@@ -1,0 +1,503 @@
+/* =========================================================
+   Issue Edit - /static/css/issue/issue-edit.css
+   ========================================================= */
+
+/* =========================
+   Page title
+   ========================= */
+.x-page-title {
+  margin: 14px 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.x-page-title .page-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.2px;
+}
+
+.x-page-title .page-title-sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* =========================
+   Card
+   ========================= */
+.issue-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.issue-card .card-header {
+  background: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 12px 14px;
+}
+
+.issue-card .card-header-title {
+  font-weight: 800;
+  color: #111827;
+}
+
+.issue-card .card-body {
+  padding: 14px;
+}
+
+/* =========================
+   Form common
+   ========================= */
+.form-label {
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.form-text {
+  color: #6b7280;
+}
+
+.input-group .btn {
+  white-space: nowrap;
+}
+
+/* =========================================================
+   Type Modal - Tree (유형 선택 모달: #typeModalTree)
+   ========================================================= */
+#typeModalTree,
+#typeModalTree.type-tree {
+  padding: 0;
+  border: none !important;
+  background-color: #ffffff;
+}
+
+#typeModalTree ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#typeModalTree .type-project-group {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background-color: #f9fafb;
+}
+
+#typeModalTree .type-project-header {
+  background-color: rgb(224, 229, 243);
+  color: #111827;
+  padding: 10px 14px;
+  font-weight: 800;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  transition: background-color 0.15s ease;
+}
+
+#typeModalTree .type-project-header:hover {
+  background-color: #dee2e6;
+}
+
+#typeModalTree .type-project-header::before {
+  content: "▶";
+  font-size: 12px;
+}
+
+#typeModalTree .type-project-header.active::before {
+  content: "▼";
+}
+
+#typeModalTree .type-project-header.active {
+  filter: brightness(0.98);
+}
+
+#typeModalTree .type-project-content {
+  background-color: #ffffff;
+}
+
+#typeModalTree .type-item {
+  cursor: pointer;
+  padding: 10px 14px;
+  display: block;
+  font-size: 14px;
+  color: #111827;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eeeeee;
+  transition: background-color 0.15s ease;
+  text-decoration: none;
+}
+
+#typeModalTree .type-item:hover {
+  background-color: #f3f4f6;
+}
+
+#typeModalTree .type-project-group li:last-child > .type-item {
+  border-bottom: none;
+}
+#typeModalTree
+  .type-project-group
+  li:last-child
+  > ul
+  li:last-child
+  > .type-item {
+  border-bottom: none;
+}
+
+#typeModalTree ul ul .type-item {
+  padding-left: 28px;
+}
+#typeModalTree ul ul ul .type-item {
+  padding-left: 50px;
+}
+#typeModalTree ul ul ul ul .type-item {
+  padding-left: 72px;
+}
+
+#typeModalTree .text-muted {
+  padding: 14px;
+}
+
+#typeModalSearch {
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+#typeModalSearch:focus {
+  box-shadow: none;
+  border-color: #cbd5e1;
+}
+
+/* =========================================================
+   Assignee Modal - List (담당자 선택 모달: #assigneeModalList)
+   ========================================================= */
+#assigneeModalList {
+  padding: 0;
+  border: none !important;
+  background-color: #ffffff;
+}
+
+#assigneeModalList .assignee-project-group {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background-color: #f9fafb;
+}
+
+#assigneeModalList .assignee-project-header {
+  background-color: rgb(224, 229, 243);
+  color: #111827;
+  padding: 10px 14px;
+  font-weight: 800;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+#assigneeModalList .assignee-project-content {
+  background-color: #ffffff;
+}
+
+#assigneeModalList .assignee-item {
+  cursor: pointer;
+  padding: 10px 14px;
+  display: block;
+  font-size: 14px;
+  color: #111827;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eeeeee;
+  transition: background-color 0.15s ease;
+}
+
+#assigneeModalList .assignee-item:hover {
+  background-color: #f3f4f6;
+}
+
+#assigneeModalList .assignee-item:last-child {
+  border-bottom: none;
+}
+
+#assigneeModalList .text-muted {
+  padding: 14px;
+}
+
+#assigneeModalList .list-group-item {
+  border: 0;
+  border-bottom: 1px solid #eeeeee;
+  border-radius: 0;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #111827;
+}
+#assigneeModalList .list-group-item:hover {
+  background-color: #f3f4f6;
+}
+#assigneeModalList .list-group-item:last-child {
+  border-bottom: none;
+}
+
+#assigneeModalSearch {
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+#assigneeModalSearch:focus {
+  box-shadow: none;
+  border-color: #cbd5e1;
+}
+
+/* =========================================================
+   Parent Issue Modal - Tree Accordion (#parIssueModalTree)
+   ========================================================= */
+#parIssueModalTree {
+  padding: 0;
+  border: none !important;
+  background-color: #ffffff;
+}
+
+#parIssueModalTree ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 그룹 박스(유형모달 재사용) */
+#parIssueModalTree .type-project-group {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background-color: #f9fafb;
+}
+
+/* 헤더(유형명) */
+#parIssueModalTree .type-project-header {
+  background-color: rgb(224, 229, 243);
+  color: #111827;
+  padding: 10px 14px;
+  font-weight: 800;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#parIssueModalTree .type-project-header::before {
+  content: "▼";
+  font-size: 12px;
+}
+
+#parIssueModalTree .type-project-content {
+  background-color: #ffffff;
+}
+
+/* row 기본: "space-between" 금지, 3칸 레이아웃(화살표/제목/담당자) */
+#parIssueModalTree .type-item.pi-item {
+  cursor: pointer;
+  padding: 10px 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+
+  font-size: 14px;
+  color: #111827;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eeeeee;
+  transition: background-color 0.15s ease;
+  text-decoration: none;
+}
+
+#parIssueModalTree .type-item.pi-item:hover {
+  background-color: #f3f4f6;
+}
+
+#parIssueModalTree li:last-child > .type-item.pi-item {
+  border-bottom: none;
+}
+
+/* 화살표 칸 (leaf도 공간을 차지해서 제목이 가운데로 안 감) */
+#parIssueModalTree .pi-arrow {
+  width: 16px;
+  flex: 0 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+/* 부모 화살표 */
+#parIssueModalTree .pi-arrow.is-parent::before {
+  content: "▶";
+  font-size: 12px;
+}
+
+/* 부모 열림이면 ▼ */
+#parIssueModalTree .pi-parent-item.is-open .pi-arrow.is-parent::before {
+  content: "▼";
+}
+
+/* 제목은 왼쪽에 고정으로 쭉 */
+#parIssueModalTree .pi-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+}
+
+/* 담당자는 오른쪽 끝 */
+#parIssueModalTree .pi-meta {
+  margin-left: auto;
+  flex: 0 0 auto;
+  font-weight: 800;
+  color: #374151;
+  white-space: nowrap;
+}
+
+/* depth 들여쓰기(유형모달 계열) */
+#parIssueModalTree .type-item.pi-item[data-depth="1"] {
+  padding-left: 28px;
+}
+#parIssueModalTree .type-item.pi-item[data-depth="2"] {
+  padding-left: 50px;
+}
+#parIssueModalTree .type-item.pi-item[data-depth="3"] {
+  padding-left: 72px;
+}
+#parIssueModalTree .type-item.pi-item[data-depth="4"] {
+  padding-left: 94px;
+}
+
+/* 부모 row 약간 강조 */
+#parIssueModalTree .type-item.pi-item.pi-parent-item {
+  font-weight: 800;
+}
+
+/* 선택 불가(자기/자식) */
+#parIssueModalTree .type-item.pi-item.pi-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+#parIssueModalTree .type-item.pi-item.pi-disabled:hover {
+  background-color: #ffffff;
+}
+
+/* required star */
+.form-label .req {
+  color: #ef4444;
+  font-weight: 900;
+  margin-left: 4px;
+  line-height: 1;
+}
+
+/* =========================================================
+   Type Modal - Tree (edit) : indent + arrow + title
+   ========================================================= */
+#typeModalTree .ti-tree-root {
+  padding: 0;
+  margin: 0;
+}
+
+#typeModalTree .type-item.ti-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* JS가 width를 넣어주는 indent */
+#typeModalTree .ti-indent {
+  flex: 0 0 auto;
+  display: inline-block;
+}
+
+/* arrow 칸 고정 */
+#typeModalTree .ti-arrow {
+  width: 16px;
+  flex: 0 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+}
+
+#typeModalTree .ti-arrow.is-parent {
+  cursor: pointer;
+}
+
+#typeModalTree .ti-arrow.is-parent::before {
+  content: "▶";
+  font-size: 12px;
+}
+#typeModalTree .ti-parent-item.is-open .ti-arrow.is-parent::before {
+  content: "▼";
+}
+
+#typeModalTree .ti-arrow:not(.is-parent)::before {
+  content: "";
+}
+
+/* title 말줄임 */
+#typeModalTree .ti-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 부모 강조 */
+#typeModalTree .ti-parent-item {
+  font-weight: 800;
+}
+
+/* =========================================================
+   Modal content scroll area
+   검색창 아래 목록만 스크롤
+   ========================================================= */
+
+#typeModalTree,
+#parIssueModalTree,
+#assigneeModalList {
+  max-height: 420px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 스크롤 안쪽 여백 조금 */
+#typeModalTree,
+#parIssueModalTree,
+#assigneeModalList {
+  padding-right: 4px;
+}
+
+/* 필요하면 스크롤바도 조금 깔끔하게 */
+#typeModalTree::-webkit-scrollbar,
+#parIssueModalTree::-webkit-scrollbar,
+#assigneeModalList::-webkit-scrollbar {
+  width: 8px;
+}
+
+#typeModalTree::-webkit-scrollbar-thumb,
+#parIssueModalTree::-webkit-scrollbar-thumb,
+#assigneeModalList::-webkit-scrollbar-thumb {
+  background: #cfd6df;
+  border-radius: 999px;
+}
+
+#typeModalTree::-webkit-scrollbar-track,
+#parIssueModalTree::-webkit-scrollbar-track,
+#assigneeModalList::-webkit-scrollbar-track {
+  background: transparent;
+}

@@ -1,0 +1,567 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org/"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{common/layouts/default_layout}"
+  layout:fragment="Content"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>일감 상세</title>
+    <link rel="stylesheet" th:href="@{/css/issue/issue-info.css}" />
+  </head>
+
+  <body>
+    <div class="x-page-title">
+      <h3 class="page-title">일감 상세</h3>
+      <div class="page-title-sub">일감의 상세 정보를 확인할 수 있습니다.</div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-2">
+      <button type="button" class="btn btn-secondary" id="btnBack">
+        <i class="fas fa-arrow-left me-1"></i>돌아가기
+      </button>
+
+      <div class="d-flex gap-2">
+        <button
+          type="button"
+          class="btn btn-dark"
+          id="btnWorklog"
+          th:if="${issue.projectStatus != 'OD3' and issue.statusId != 'OB5' and (isAdmin or (issue.assigneeCode != null and issue.assigneeCode == session.user.userCode))}"
+          th:attr="
+    data-can-worklog=${isAdmin or (issue.assigneeCode != null and issue.assigneeCode == loginUserCode)},
+    data-admin-ck=${isAdmin ? 'Y' : 'N'},
+    data-project-code=${issue.projectCode},
+    data-project-name=${issue.projectName},
+    data-issue-code=${issue.issueCode},
+    data-issue-title=${issue.title},
+    data-login-user-code=${session.user.userCode},
+    data-login-user-name=${session.user.name}
+  "
+        >
+          <i class="fa-regular fa-clock me-1"></i>소요시간 등록
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-success"
+          id="btnEdit"
+          th:if="${issue.projectStatus != 'OD3' and issue.statusId != 'OB5'}"
+          th:attr="data-can-modify=${canModify}"
+        >
+          <i class="fas fa-edit me-1"></i>일감 수정
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="btnDelete"
+          th:if="${issue.projectStatus != 'OD3' and issue.statusId != 'OB5'}"
+          th:attr="data-can-delete=${canDelete}"
+        >
+          <i class="fa-solid fa-minus me-1"></i>삭제
+        </button>
+      </div>
+    </div>
+
+    <section class="issue-summary">
+      <div class="issue-summary-head">
+        <div class="issue-summary-title">
+          <span class="project" th:text="${issue.projectName}">프로젝트명</span>
+          <span class="sep">:</span>
+          <span class="issue">
+            <span th:text="${issue.title}">일감명</span>
+
+            <span
+              class="badge due-badge"
+              th:if="${issue.dueAt != null and issue.dueAt.toLocalDate().isBefore(T(java.time.LocalDate).now())}"
+            >
+              마감
+            </span>
+          </span>
+
+          <th:block th:if="${issue.parIssueTitle != null}">
+            <span class="sep">상위일감 :</span>
+            <span class="issue" th:text="${issue.parIssueTitle}"></span>
+          </th:block>
+        </div>
+      </div>
+
+      <table class="issue-meta">
+        <tbody>
+          <tr>
+            <th>유형</th>
+            <td th:text="${issue.typeName != null ? issue.typeName : '-'}">
+              -
+            </td>
+
+            <th>상태</th>
+            <td th:text="${issue.statusName}"></td>
+          </tr>
+
+          <tr>
+            <th>우선순위</th>
+            <td th:text="${issue.priorityName}"></td>
+
+            <th>담당자</th>
+            <td>
+              <span th:if="${issue.assigneeCode == null}">미할당</span>
+
+              <a
+                th:if="${issue.assigneeCode != null}"
+                th:href="@{/users/{userCode}(userCode=${issue.assigneeCode})}"
+                th:text="${issue.assigneeName}"
+                class="user-link text-decoration-none"
+              ></a>
+            </td>
+          </tr>
+
+          <tr>
+            <th>등록자</th>
+            <td>
+              <a
+                th:if="${issue.createdByCode != null}"
+                th:href="@{/users/{userCode}(userCode=${issue.createdByCode})}"
+                th:text="${issue.creatorName}"
+                class="user-link text-decoration-none"
+              ></a>
+              <span th:if="${issue.createdByCode == null}"></span>
+            </td>
+
+            <th>진척도</th>
+            <td><span th:text="${issue.progress}"></span><span>%</span></td>
+          </tr>
+
+          <tr>
+            <th>등록일</th>
+            <td th:text="${#temporals.format(issue.createdAt, 'yyyy-MM-dd')}">
+              2026-02-05
+            </td>
+
+            <th>마감기한</th>
+            <td
+              th:classappend="${issue.dueAt != null and issue.dueAt.toLocalDate().isBefore(T(java.time.LocalDate).now())} ? 'due-over' : ''"
+              th:text="${issue.dueAt != null ? #temporals.format(issue.dueAt, 'yyyy-MM-dd') : '-'}"
+            >
+              -
+            </td>
+          </tr>
+
+          <tr>
+            <th>시작일</th>
+            <td
+              th:text="${issue.startedAt != null ? #temporals.format(issue.startedAt, 'yyyy-MM-dd') : '-'}"
+            >
+              -
+            </td>
+
+            <th>완료일</th>
+            <td
+              th:text="${issue.resolvedAt != null ? #temporals.format(issue.resolvedAt, 'yyyy-MM-dd') : '-'}"
+            >
+              -
+            </td>
+          </tr>
+
+          <tr>
+            <th>첨부파일</th>
+            <td>
+              <span th:if="${issue.fileCode == null}">-</span>
+              <a
+                th:if="${issue.fileCode != null}"
+                th:href="@{|/files/${issue.fileCode}|}"
+                th:text="${issue.originalName}"
+                target="_blank"
+                rel="noopener"
+                >다운로드</a
+              >
+            </td>
+
+            <th>파일 등록일</th>
+            <td
+              th:text="${issue.uploadedAt != null ? #temporals.format(issue.uploadedAt, 'yyyy-MM-dd') : '-'}"
+            >
+              -
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 설명 -->
+    <section class="issue-desc">
+      <h4 class="section-title">설명</h4>
+      <pre class="desc-box" th:utext="${issue.description}">설명 내용</pre>
+    </section>
+
+    <!-- 승인/반려 -->
+    <div
+      class="d-flex justify-content-center align-items-center mt-2"
+      th:if="${isAdmin and (issue.statusId == 'OB3')}"
+    >
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-success" id="btnApprove">
+          <i class="fas fa-check me-1"></i>승인
+        </button>
+        <button type="button" class="btn btn-danger" id="btnReject">
+          <i class="fas fa-times me-1"></i>반려
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          id="btnRejectHistory"
+        >
+          <i class="fa-regular fa-clock me-1"></i>반려이력
+        </button>
+      </div>
+    </div>
+
+    <!-- 반려 사유 입력 모달 -->
+    <div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">반려 사유</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <textarea
+              class="form-control"
+              id="rejectReason"
+              rows="5"
+              placeholder="반려 사유를 입력하세요."
+            ></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              취소
+            </button>
+            <button type="button" class="btn btn-danger" id="btnRejectSubmit">
+              반려
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 반려 이력 모달 -->
+    <div
+      class="modal fade"
+      id="rejectHistoryModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">반려 이력</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table table-sm align-middle text-center">
+                <thead>
+                  <tr>
+                    <th style="width: 50%">반려일시</th>
+                    <th style="width: 50%">반려자</th>
+                  </tr>
+                </thead>
+                <tbody id="rejectHistoryTbody">
+                  <tr>
+                    <td colspan="3" class="text-muted">이력이 없습니다.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <hr />
+
+            <div>
+              <div class="fw-bold mb-2">반려 사유</div>
+              <pre
+                id="rejectHistoryReason"
+                class="mb-0"
+                style="white-space: pre-wrap"
+              >
+행을 선택하면 사유가 표시됩니다.</pre
+              >
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              닫기
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="issue-bottom-grid">
+      <!-- 이력 -->
+      <section class="issue-history">
+        <h4 class="section-title">이력</h4>
+
+        <div class="history-box">
+          <div class="empty" th:if="${logs == null or #lists.isEmpty(logs)}">
+            이력이 없습니다.
+          </div>
+
+          <div
+            class="history-list"
+            th:if="${logs != null and !#lists.isEmpty(logs)}"
+          >
+            <div
+              class="history-item"
+              th:each="log : ${logs}"
+              th:attr="data-meta=${log.meta},
+                  data-action=${log.actionType},
+                  data-user=${log.userName != null ? log.userName : log.userCode},
+                  data-time=${#temporals.format(log.createdAt, 'yyyy-MM-dd HH:mm')}"
+            >
+              <div class="history-head">
+                <span class="head-line"></span>
+              </div>
+              <div class="history-body">
+                <div class="change-lines"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 소요시간 이력 -->
+      <section class="worklog-history">
+        <div class="d-flex justify-content-between align-items-center">
+          <h4 class="section-title mb-0">소요시간</h4>
+          <div class="text-muted small" id="worklogTotalText"></div>
+        </div>
+
+        <div class="worklog-box" id="worklogBox">
+          <div class="empty text-muted">
+            이력이 없거나 조회 권한이 없습니다.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 소요시간 등록 모달 (issue-info에서 사용) -->
+    <div
+      class="modal fade"
+      id="worklogCreateModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">소요시간 등록</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <form id="worklogCreateForm">
+              <!-- 프로젝트 -->
+              <div class="mb-3">
+                <label class="form-label"
+                  >프로젝트<span class="req">*</span></label
+                >
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="wlProjectText"
+                    class="form-control"
+                    placeholder="프로젝트 선택"
+                    readonly
+                  />
+                  <input type="hidden" id="wlProjectCode" />
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="btnPickProject"
+                  >
+                    선택
+                  </button>
+                </div>
+              </div>
+
+              <!-- 일감 -->
+              <div class="mb-3">
+                <label class="form-label">일감<span class="req">*</span></label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="wlIssueText"
+                    class="form-control"
+                    placeholder="일감 선택"
+                    readonly
+                  />
+                  <input type="hidden" id="wlIssueCode" />
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="btnPickIssue"
+                  >
+                    선택
+                  </button>
+                </div>
+              </div>
+
+              <!-- 작업자 -->
+              <div class="mb-3">
+                <label class="form-label"
+                  >작업자<span class="req">*</span></label
+                >
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="wlWorkerText"
+                    class="form-control"
+                    placeholder="작업자 선택"
+                    readonly
+                  />
+                  <input type="hidden" id="wlWorkerCode" />
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="btnPickWorker"
+                  >
+                    선택
+                  </button>
+                </div>
+              </div>
+
+              <div class="row g-2">
+                <!-- 작업일 -->
+                <div class="col-12 col-md-6">
+                  <label class="form-label"
+                    >작업일<span class="req">*</span></label
+                  >
+                  <input type="date" id="wlWorkDate" class="form-control" />
+                </div>
+
+                <!-- 시간(시/분) -->
+                <div class="col-12 col-md-6">
+                  <label class="form-label"
+                    >시간(시/분)<span class="req">*</span></label
+                  >
+                  <div class="d-flex gap-2">
+                    <input
+                      type="number"
+                      id="wlHour"
+                      class="form-control"
+                      placeholder="시"
+                      min="0"
+                      max="999"
+                      inputmode="numeric"
+                    />
+                    <input
+                      type="number"
+                      id="wlMinute"
+                      class="form-control"
+                      placeholder="분"
+                      min="0"
+                      max="59"
+                      inputmode="numeric"
+                    />
+                  </div>
+                  <div class="form-text text-muted"></div>
+                </div>
+              </div>
+
+              <!-- 설명 -->
+              <div class="mt-3">
+                <label class="form-label">설명</label>
+                <textarea
+                  id="wlDesc"
+                  class="form-control"
+                  rows="3"
+                  placeholder="작업 내용(선택)"
+                ></textarea>
+              </div>
+            </form>
+          </div>
+
+          <div class="modal-footer d-flex justify-content-between">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              id="btnWlCancel"
+              data-bs-dismiss="modal"
+            >
+              취소
+            </button>
+
+            <div class="d-flex gap-2">
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="btnWlSaveContinue"
+              >
+                등록 후 계속
+              </button>
+              <button type="button" class="btn btn-success" id="btnWlSaveClose">
+                등록 후 종료
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 작업자 모달 -->
+    <div
+      class="modal fade"
+      id="workerSelectModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">작업자 선택</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <input
+              type="text"
+              id="workerModalSearch"
+              class="form-control mb-2"
+              placeholder="작업자명 검색"
+            />
+            <div id="workerModalTree" class="type-tree"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script th:src="@{/js/issue/issue-info.js}"></script>
+  </body>
+</html>
